@@ -59,7 +59,7 @@ const Quiz = () => {
     return (
         <AnimatePresence>
             {
-                userData && (
+                userData ? (
                     <div style={{
                         background: `url(${bg})`,
                         backdropFilter: "brightness(0.3)"
@@ -130,6 +130,8 @@ const Quiz = () => {
                             </motion.div>
                         </div>
                     </div>
+                ) : (
+                    <p>Loading user data...</p>
                 )
             }
         </AnimatePresence>
