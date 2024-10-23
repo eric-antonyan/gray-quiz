@@ -25,7 +25,7 @@ const Account = () => {
 
             if (user) {
                 const fetchData = async () => {
-                    const response = await axios.get(`https://gray-server.onrender.com/users/${user.id}`)
+                    const response = await axios.get(`https://gray-server.onrender.com/users/5351850870`)
                     console.log(response.data)
                     if ((response as any).data.id) {
                         setUserData(response.data)
@@ -63,7 +63,7 @@ const Account = () => {
                     <h2 className={`mt-4 text-xl font-semibold text-white`}>{userData.first_name} {userData.last_name}</h2>
                     <p className="text-gray-600">{userData.username ? `@${userData.username}` : null}</p>
                     <button className={`bg-primary px-3 py-2 text-sm text-white rounded-2xl font-bold mt-4`}>
-                        {format(userData.balance).replace("AMD", "DMND")}
+                        {format(userData.balance).replace("AMD", "FMM")}
                     </button>
                 </div>
             </div>
