@@ -19,6 +19,8 @@ const Account = () => {
             const tg = (window as any).Telegram.WebApp;
             const user = tg.initDataUnsafe.user;
 
+            console.log(user)
+
 
             if (user) {
                 const fetchData = async () => {
