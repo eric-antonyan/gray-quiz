@@ -17,14 +17,14 @@ const Quiz = () => {
             const tg = (window as any).Telegram.WebApp;
             const user = tg.initDataUnsafe.user;
 
-            const fetchData = async () => {
-                const response = await axios.get(`https://gray-server.onrender.com/users/${userData.id}`)
-                if ((response as any).id) {
-                    setUserData(user)
-                }
-            }
 
             if (user) {
+                const fetchData = async () => {
+                    const response = await axios.get(`https://gray-server.onrender.com/users/${userData.id}`)
+                    if ((response as any).id) {
+                        setUserData(user)
+                    }
+                }
                 fetchData()
             }
         }
