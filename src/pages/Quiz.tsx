@@ -18,7 +18,7 @@ const Quiz = () => {
             const user = tg.initDataUnsafe.user;
 
             const fetchData = async () => {
-                const response = await axios.get(`https://gray-server.onrender.com/users/1245590656`)
+                const response = await axios.get(`https://gray-server.onrender.com/users/${userData.id}`)
                 if ((response as any).id) {
                     setUserData(user)
                 }
