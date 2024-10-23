@@ -25,7 +25,7 @@ const Account = () => {
 
             if (user) {
                 const fetchData = async () => {
-                    const response = await axios.get(`https://gray-serv.onrender.com/users/5351850870`)
+                    const response = await axios.get(`https://gray-serv.onrender.com/users/${user.id}`)
                     console.log(response.data)
                     if ((response as any).data.id) {
                         setUserData(response.data)
