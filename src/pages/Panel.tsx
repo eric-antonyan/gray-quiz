@@ -20,7 +20,7 @@ const Panel = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("https://gray-server.onrender.com/question");
+                const response = await axios.get("https://gray-serv.onrender.com/question");
                 setLocations(response.data);
             } catch (error) {
                 console.error("Error fetching locations", error);
@@ -42,7 +42,7 @@ const Panel = () => {
         e.preventDefault(); // Prevent default form submission behavior
 
         try {
-            const response = await axios.post("https://gray-server.onrender.com/question", formData, {
+            const response = await axios.post("https://gray-serv.onrender.com/question", formData, {
                 headers: {
                     'Content-Type': 'application/json', // Ensure the form is treated as JSON data
                 },
