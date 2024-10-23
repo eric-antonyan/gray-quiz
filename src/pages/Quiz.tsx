@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { questions } from '../mock-data';
 import bg from "../assets/img/background.jpg";
 import { AnimatePresence, motion } from "framer-motion";
+import defaultUser from "../assets/img/default_user.png"
 
 const Quiz = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
@@ -78,7 +79,7 @@ const Quiz = () => {
                             <h1 className='font-bold text-2xl'>Gray<span className='text-red-500'>Quizz</span></h1>
                             <div className='flex gap-2 items-center bg-white text-sm p-2 rounded-2xl'>
                                 <p className='font-bold text-black'>@{userData.username}</p>
-                                <img src={userData.photo_url} className='w-[30px] aspect-square object-cover rounded-full' alt=""/>
+                                <img src={userData.photo_url ? userData.photo_url : defaultUser} className='w-[30px] aspect-square object-cover rounded-full' alt=""/>
                             </div>
                         </div>
 
