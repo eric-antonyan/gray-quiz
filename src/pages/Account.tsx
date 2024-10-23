@@ -37,7 +37,7 @@ const Account = () => {
 
     const format = (number: number) => {
         return Intl.NumberFormat('ru-RU', {
-            currency: 'DMND',
+            currency: 'AMD',
             style: 'currency'
         }).format(number);
     };
@@ -73,7 +73,7 @@ const Account = () => {
                     <h2 className={`mt-4 text-xl font-semibold text-white`}>{userData.first_name} {userData.last_name}</h2>
                     <p className="text-gray-600">{userData.username ? `@${userData.username}` : null}</p>
                     <button className={`bg-primary px-3 py-2 text-sm text-white rounded-2xl font-bold mt-4`}>
-                        {format(userData.balance)}
+                        {format(userData.balance).replace("AMD", "DMND")}
                     </button>
                 </div>
             </div>
