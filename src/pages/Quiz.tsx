@@ -22,7 +22,7 @@ const Quiz = () => {
                 const fetchData = async () => {
                     const response = await axios.get(`https://gray-server.onrender.com/users/${user.id}`)
                     console.log(response.data)
-                    if ((response as any).id) {
+                    if ((response as any).data.id) {
                         setUserData(response.data)
                     }
                 }
