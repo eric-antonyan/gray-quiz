@@ -12,7 +12,7 @@ interface TelegramUser {
 }
 
 const Account = () => {
-    const [user, setUserData] = useState<any>();
+    const [userData, setUserData] = useState<any>();
 
     useEffect(() => {
         if ((window as any).Telegram) {
@@ -48,29 +48,29 @@ const Account = () => {
                 <Link to={"/"}>
                     <FaChevronLeft className="" />
                 </Link>
-                <span className="font-bold text-lg">{user.username ? user.username : `${user.first_name} ${user.last_name}`}</span>
+                <span className="font-bold text-lg">{userData.username ? userData.username : `${userData.first_name} ${userData.last_name}`}</span>
                 <FaGear />
             </header>
             <div className="flex flex-col items-center mt-6">
-                {user.photo_url ? (
-                    user.photo_url !== "letters" ? (
+                {userData.photo_url ? (
+                    userData.photo_url !== "letters" ? (
                         <img
-                            src={user.photo_url}
-                            alt={`${user.first_name} ${user.last_name}`}
+                            src={userData.photo_url}
+                            alt={`${userData.first_name} ${userData.last_name}`}
                             className={`w-[150px] aspect-square rounded-full border-2 border-primary`}
                         />
                     ) : (
                         <div className={`w-[150px] aspect-square rounded-full border-2 border-primary text-primary text-5xl font-bold flex items-center justify-center`}>
-                            {user.first_name[0].toUpperCase()}
+                            {userData.first_name[0].toUpperCase()}
                         </div>
                     )
                 ) : (
                     <p>No photo available</p>
                 )}
-                <h2 className={`mt-4 text-xl font-semibold text-white`}>{user.first_name} {user.last_name}</h2>
-                <p className="text-gray-600">{user.username ? `@${user.username}` : null}</p>
+                <h2 className={`mt-4 text-xl font-semibold text-white`}>{userData.first_name} {userData.last_name}</h2>
+                <p className="text-gray-600">{userData.username ? `@${userData.username}` : null}</p>
                 <button className={`bg-primary px-3 py-2 text-sm text-white rounded-2xl font-bold mt-4`}>
-                    {format(user.balance)}
+                    {format(userData.balance)}
                 </button>
             </div>
         </div>
