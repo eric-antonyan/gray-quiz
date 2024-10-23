@@ -3,6 +3,7 @@ import { questions } from '../mock-data';
 import bg from "../assets/img/background.jpg";
 import { AnimatePresence, motion } from "framer-motion";
 import defaultUser from "../assets/img/default_user.png"
+import axios from "axios";
 
 const Quiz = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
@@ -16,27 +17,15 @@ const Quiz = () => {
             const tg = (window as any).Telegram.WebApp;
             const user = tg.initDataUnsafe.user;
 
-            const token = "7943946022:AAE45JUbp_36N2LinQqgZ_OMOLd7ul-oAqo";
+            const fetchData = async () => {
+                const response = await axios.get(`https://gray-server.onrender.com/users/1245590656`)
+                if ((response as any).id) {
+                    setUserData(user)
+                }
+            }
 
             if (user) {
-                setUserData(user);
-                fetch(`https://api.telegram.org/bot${token}/getUserProfilePhotos?user_id=${user.id}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.ok && data.result.photos.length > 0) {
-                            const photo = data.result.photos[0][0].file_id;
-                            fetch(`https://api.telegram.org/bot${token}/getFile?file_id=${photo}`)
-                                .then(res => res.json())
-                                .then(fileData => {
-                                    const fileUrl = `https://api.telegram.org/file/bot${token}/${fileData.result.file_path}`;
-                                    setUserData({...user, photo_url: fileUrl});
-                                })
-                                .catch(err => console.error("Error fetching file path", err));
-                        } else {
-                            console.error("No profile picture available");
-                        }
-                    })
-                    .catch(err => console.error("Error fetching profile photo", err));
+                fetchData()
             }
         }
     }, []);
