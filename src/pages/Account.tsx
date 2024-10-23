@@ -11,11 +11,7 @@ interface TelegramUser {
     photo_url?: string;
 }
 
-interface Accountable {
-    user: TelegramUser;
-}
-
-const Account: FC<Accountable> = () => {
+const Account = () => {
     const [user, setUserData] = useState<any>();
 
     useEffect(() => {
@@ -39,7 +35,7 @@ const Account: FC<Accountable> = () => {
 
     const format = (number: number) => {
         return Intl.NumberFormat('ru-RU', {
-            currency: 'AMD',
+            currency: 'DMND',
             style: 'currency'
         }).format(number);
     };
@@ -72,7 +68,7 @@ const Account: FC<Accountable> = () => {
                 <h2 className={`mt-4 text-xl font-semibold text-white`}>{user.first_name} {user.last_name}</h2>
                 <p className="text-gray-600">{user.username ? `@${user.username}` : null}</p>
                 <button className={`bg-primary px-3 py-2 text-sm text-white rounded-2xl font-bold mt-4`}>
-                    {format(20000)}
+                    {format(user.balance)}
                 </button>
             </div>
         </div>
