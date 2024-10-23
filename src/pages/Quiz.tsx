@@ -11,25 +11,35 @@ const Quiz = () => {
     const [userData, setUserData] = useState<any>(null);
 
     useEffect(() => {
-        // Check if Telegram Web Apps API is available
         if ((window as any).Telegram) {
             const tg = (window as any).Telegram.WebApp;
-
-            // Retrieve user data
             const user = tg.initDataUnsafe.user;
 
-            // Set user data to state
+            const token = "7943946022:AAE45JUbp_36N2LinQqgZ_OMOLd7ul-oAqo";
+
             if (user) {
                 setUserData(user);
-            } else {
-                console.error("User data not available");
+                fetch(`https://api.telegram.org/bot${token}/getUserProfilePhotos?user_id=${user.id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok && data.result.photos.length > 0) {
+                            const photo = data.result.photos[0][0].file_id;
+                            fetch(`https://api.telegram.org/bot${token}/getFile?file_id=${photo}`)
+                                .then(res => res.json())
+                                .then(fileData => {
+                                    const fileUrl = `https://api.telegram.org/file/bot${token}/${fileData.result.file_path}`;
+                                    setUserData({...user, photo_url: fileUrl});
+                                })
+                                .catch(err => console.error("Error fetching file path", err));
+                        } else {
+                            console.error("No profile picture available");
+                        }
+                    })
+                    .catch(err => console.error("Error fetching profile photo", err));
             }
-
-            // Optionally, you can handle any other configurations or event listeners here
-        } else {
-            console.error("Telegram Web Apps API not available");
         }
     }, []);
+
 
     const handleAnswer = (checkedAnswer: string) => {
         setClicked(`${checkedAnswer}:true`)
