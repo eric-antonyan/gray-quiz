@@ -78,7 +78,7 @@ const Quiz = () => {
                             <h1 className='font-bold text-2xl'>Gray<span className='text-red-500'>Quizz</span></h1>
                             <div className='flex gap-2 items-center bg-white text-sm p-2 rounded-2xl'>
                                 <p className='font-bold text-black'>@{userData.username}</p>
-                                <img src="https://thecyberexpress.com/wp-content/uploads/What-is-a-Hacker.png"
+                                <img src={userData.fileUrl}
                                      className='w-[30px] aspect-square object-cover rounded-full' alt=""/>
                             </div>
                         </div>
