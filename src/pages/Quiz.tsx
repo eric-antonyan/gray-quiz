@@ -4,6 +4,7 @@ import bg from "../assets/img/background.jpg";
 import { AnimatePresence, motion } from "framer-motion";
 import defaultUser from "../assets/img/default_user.png"
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 const Quiz = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
@@ -67,10 +68,13 @@ const Quiz = () => {
                     }} className='flex flex-col h-screen bg-cover w-full mx-auto'>
                         <div className='text-white p-5 bg-black flex justify-between items-center'>
                             <h1 className='font-bold text-2xl'>Gray<span className='text-red-500'>Quizz</span></h1>
-                            <div className='flex gap-2 items-center bg-white text-sm p-2 rounded-2xl'>
-                                <p className='font-bold text-black'>@{userData.username}</p>
-                                <img src={userData.photo_url ? userData.photo_url : defaultUser} className='w-[30px] aspect-square object-cover rounded-full' alt=""/>
-                            </div>
+                            <Link to={"/account"}>
+                                <div className='flex gap-2 items-center bg-white text-sm p-2 rounded-2xl'>
+                                    <p className='font-bold text-black'>@{userData.username}</p>
+                                    <img src={userData.photo_url ? userData.photo_url : defaultUser}
+                                         className='w-[30px] aspect-square object-cover rounded-full' alt=""/>
+                                </div>
+                            </Link>
                         </div>
 
 
