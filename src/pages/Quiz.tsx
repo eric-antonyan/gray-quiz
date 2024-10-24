@@ -48,7 +48,6 @@ const Quiz = () => {
             fetchQuestions()
 
 
-
             if (user) {
                 const fetchData = async () => {
                     const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`)
@@ -57,11 +56,17 @@ const Quiz = () => {
                         setUserData(() => {
                             return response.data
                         })
-                        setLevelDefault()
+
                     }
                 }
 
-                fetchData()
+                const render = async  () => {
+
+                    await fetchData()
+                    await setLevelDefault()
+                }
+
+                render()
             }
         }
     }, []);
@@ -83,7 +88,6 @@ const Quiz = () => {
 
 
             fetchLevel()
-
 
 
         }
@@ -114,7 +118,7 @@ const Quiz = () => {
 
     const handleContinue = async () => {
         setAnswered(true);
-        setTimeout( async () => {
+        setTimeout(async () => {
             await setLevel();
             handleReset();
         }, 3000)
