@@ -9,6 +9,7 @@ type Question = {
     task: string;
     answers: string[];
     correct: number;
+    group: string;
 }
 
 const Quiz = () => {
@@ -19,6 +20,20 @@ const Quiz = () => {
     const [userData, setUserData] = useState<any>(null);
     const [questions, setQuestions] = useState<Question[]>([]);
 
+    const fetchLevel = async () => {
+        if (questions.length > 0 && questionIndex < questions.length) {
+            const group = questions[questionIndex]?.group;
+            if (group) {
+                try {
+                    const response = await axios.get(`https://gray-server.vercel.app/levels/7277185789/${group}`);
+                    console.log(response.data);
+                    setQuestionIndex(response.data.level as number);
+                } catch (error) {
+                    console.error("Error fetching level:", error);
+                }
+            }
+        }
+    };
 
     useEffect(() => {
         if ((window as any).Telegram) {
@@ -32,9 +47,12 @@ const Quiz = () => {
 
             fetchQuestions()
 
+
+
             if (user) {
             }
             const fetchData = async () => {
+
                 const response = await axios.get(`https://gray-server.vercel.app/users/7277185789`)
                 console.log(response.data)
                 if ((response as any).data.id) {
@@ -45,6 +63,23 @@ const Quiz = () => {
             fetchData()
         }
     }, []);
+    const setLevel = async () => {
+        const response = await axios.get(`https://gray-server.vercel.app/levels/7277185789/${questions[questionIndex].group}/${questionIndex + 1}`)
+        setQuestionIndex(parseInt(response.data.level))
+    }
+
+    useEffect(() => {
+        if (questions.length > 0 && questions[questionIndex]) {
+            if (answer === questions[questionIndex].answers[questions[questionIndex].correct]) {
+                handleBalance();
+            }
+
+            fetchLevel()
+
+
+
+        }
+    }, [answer, questions, questionIndex]);
 
     const handleBalance = async () => {
         await axios.get("https://gray-server.vercel.app/users/7277185789/plus");
@@ -55,7 +90,6 @@ const Quiz = () => {
         setClicked(`${checkedAnswer}:true`)
         setTimeout(async () => {
             if (answer === "") {
-                await handleBalance()
                 setAnswer(checkedAnswer);
             } else {
                 setAnswer(checkedAnswer);
@@ -67,12 +101,13 @@ const Quiz = () => {
     const handleReset = () => {
         setAnswered(false);
         setAnswer("");
+        setClicked("")
     };
 
     const handleContinue = async () => {
         setAnswered(true);
-        setTimeout(() => {
-            setQuestionIndex((prevIndex) => prevIndex + 1);
+        setTimeout( async () => {
+            await setLevel();
             handleReset();
         }, 3000)
     };
@@ -139,7 +174,7 @@ const Quiz = () => {
                                                                     transition={{
                                                                         delay: 0.5,
                                                                     }}
-                                                                    onClick={() => handleAnswer(questionAnswer)}
+                                                                    onClick={() => !Boolean(clicked[1]) ? handleAnswer(questionAnswer) : null}
                                                                     className={`p-3 font-bold rounded-2xl bg-white text-black`}
                                                                 >
                                                                     {questionAnswer}
