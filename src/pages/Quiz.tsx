@@ -1,10 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import { questions } from '../mock-data';
 import bg from "../assets/img/background.jpg";
-import { AnimatePresence, motion } from "framer-motion";
+import {AnimatePresence, motion} from "framer-motion";
 import defaultUser from "../assets/img/default_user.png"
 import axios from "axios";
 import {Link} from "react-router-dom";
+
+type Question = {
+    task: string;
+    answers: string[];
+    correct: number;
+}
 
 const Quiz = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
@@ -12,6 +17,7 @@ const Quiz = () => {
     const [answered, setAnswered] = useState(false);
     const [clicked, setClicked] = useState("");
     const [userData, setUserData] = useState<any>(null);
+    const [questions, setQuestions] = useState<Question[]>([]);
 
     useEffect(() => {
         if ((window as any).Telegram) {
@@ -88,48 +94,51 @@ const Quiz = () => {
                                 <motion.div className='h-[3px] rounded-full bg-white my-5'
                                             animate={{width: 100 / (questions.length - questionIndex) + "%"}}></motion.div>
                             </div>
-                            <motion.div initial={{x: 0}} animate={{x: -(100 / (questions.length / questionIndex)) + "%"}}
+                            <motion.div initial={{x: 0}}
+                                        animate={{x: -(100 / (questions.length / questionIndex)) + "%"}}
                                         transition={{
                                             duration: 0.25,
                                             type: 'tween'
                                         }} className='flex' style={{width: questions.length * 100 + "%"}}>
                                 {
-                                    questions.map(({correct, answers, task}, i) => (
-                                        <motion.div
-                                            key={i}
-                                            transition={{type: "spring", stiffness: 300, damping: 30}}
-                                            className='flex flex-col h-screen p-5 flex-1'>
-                                            <h1 className='text-lg font-bold text-center text-white'>{i + 1}. {task}</h1>
-                                            <div className='flex flex-col gap-3 mt-11 w-full'>
-                                                {
-                                                    answers.map((questionAnswer, index) => (
-                                                        answered ? (
-                                                            <motion.button
-                                                                key={index}
-                                                                className={`font-bold ${index !== correct ? "bg-red-500 text-white active:bg-red-200" : "bg-green-500 text-white active:bg-green-200"} p-3 rounded-2xl`}
-                                                            >
-                                                                {questionAnswer}
-                                                            </motion.button>
-                                                        ) : (
-                                                            <motion.button
-                                                                animate={{
-                                                                    backgroundColor: clicked.split(":")[0] === questionAnswer ? ["yellow", "#0f0", clicked.split(":")[0] === answers[correct] ? "green" : "red"] : "white",
-                                                                }}
-                                                                transition={{
-                                                                    delay: 0.5,
-                                                                }}
-                                                                onClick={() => handleAnswer(questionAnswer)}
-                                                                className={`p-3 font-bold rounded-2xl bg-white text-black`}
-                                                            >
-                                                                {questionAnswer}
-                                                            </motion.button>
+                                    questions && (
+                                        questions.map(({correct, answers, task}, i) => (
+                                            <motion.div
+                                                key={i}
+                                                transition={{type: "spring", stiffness: 300, damping: 30}}
+                                                className='flex flex-col h-screen p-5 flex-1'>
+                                                <h1 className='text-lg font-bold text-center text-white'>{i + 1}. {task}</h1>
+                                                <div className='flex flex-col gap-3 mt-11 w-full'>
+                                                    {
+                                                        answers.map((questionAnswer, index) => (
+                                                            answered ? (
+                                                                <motion.button
+                                                                    key={index}
+                                                                    className={`font-bold ${index !== correct ? "bg-red-500 text-white active:bg-red-200" : "bg-green-500 text-white active:bg-green-200"} p-3 rounded-2xl`}
+                                                                >
+                                                                    {questionAnswer}
+                                                                </motion.button>
+                                                            ) : (
+                                                                <motion.button
+                                                                    animate={{
+                                                                        backgroundColor: clicked.split(":")[0] === questionAnswer ? ["yellow", "#0f0", clicked.split(":")[0] === answers[correct] ? "green" : "red"] : "white",
+                                                                    }}
+                                                                    transition={{
+                                                                        delay: 0.5,
+                                                                    }}
+                                                                    onClick={() => handleAnswer(questionAnswer)}
+                                                                    className={`p-3 font-bold rounded-2xl bg-white text-black`}
+                                                                >
+                                                                    {questionAnswer}
+                                                                </motion.button>
 
-                                                        )
-                                                    ))
-                                                }
-                                            </div>
-                                        </motion.div>
-                                    ))
+                                                            )
+                                                        ))
+                                                    }
+                                                </div>
+                                            </motion.div>
+                                        ))
+                                    )
                                 }
                             </motion.div>
                         </div>
