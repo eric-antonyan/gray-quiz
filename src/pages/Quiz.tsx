@@ -19,6 +19,7 @@ const Quiz = () => {
     const [userData, setUserData] = useState<any>(null);
     const [questions, setQuestions] = useState<Question[]>([]);
 
+
     useEffect(() => {
         if ((window as any).Telegram) {
             const tg = (window as any).Telegram.WebApp;
@@ -32,23 +33,29 @@ const Quiz = () => {
             fetchQuestions()
 
             if (user) {
-                const fetchData = async () => {
-                    const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`)
-                    console.log(response.data)
-                    if ((response as any).data.id) {
-                        setUserData(response.data)
-                    }
-                }
-                fetchData()
             }
+            const fetchData = async () => {
+                const response = await axios.get(`https://gray-server.vercel.app/users/7277185789`)
+                console.log(response.data)
+                if ((response as any).data.id) {
+                    setUserData(response.data)
+                }
+            }
+
+            fetchData()
         }
     }, []);
+
+    const handleBalance = async () => {
+        await axios.get("https://gray-server.vercel.app/users/7277185789/plus");
+    }
 
 
     const handleAnswer = (checkedAnswer: string) => {
         setClicked(`${checkedAnswer}:true`)
-        setTimeout(() => {
+        setTimeout(async () => {
             if (answer === "") {
+                await handleBalance()
                 setAnswer(checkedAnswer);
             } else {
                 setAnswer(checkedAnswer);
@@ -62,7 +69,7 @@ const Quiz = () => {
         setAnswer("");
     };
 
-    const handleContinue = () => {
+    const handleContinue = async () => {
         setAnswered(true);
         setTimeout(() => {
             setQuestionIndex((prevIndex) => prevIndex + 1);

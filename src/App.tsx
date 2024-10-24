@@ -9,7 +9,6 @@ const App = () => {
         <Routes>
           <Route path={"/quiz"} element={<Quiz />} />
           <Route path={"/account"} element={<Account />} />
-          <Route path={"/panel"} element={<Panel />} />
 
         </Routes>
       </BrowserRouter>

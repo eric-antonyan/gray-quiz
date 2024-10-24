@@ -4,14 +4,6 @@ import {FaChevronLeft, FaGear, FaGears, FaLeftRight} from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import defaultUser from "../assets/img/default_user.png"
 
-interface TelegramUser {
-    id: number;
-    first_name: string;
-    last_name?: string;
-    username?: string;
-    photo_url?: string;
-}
-
 const Account = () => {
     const [userData, setUserData] = useState<any>();
 
@@ -24,16 +16,16 @@ const Account = () => {
 
 
             if (user) {
+            }
+        }
                 const fetchData = async () => {
-                    const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`)
+                    const response = await axios.get(`https://gray-server.vercel.app/users/7277185789`)
                     console.log(response.data)
                     if ((response as any).data.id) {
                         setUserData(response.data)
                     }
                 }
                 fetchData()
-            }
-        }
     }, []);
 
     const format = (number: number) => {
