@@ -13,7 +13,7 @@ type Question = {
 }
 
 const Quiz = () => {
-    const [questionIndex, setQuestionIndex] = useState(0);
+    const [questionIndex, setQuestionIndex] = useState(-1);
     const [answer, setAnswer] = useState<string | null>("");
     const [answered, setAnswered] = useState(false);
     const [clicked, setClicked] = useState("");
@@ -80,9 +80,10 @@ const Quiz = () => {
     }
 
     useEffect(() => {
-
-        setLevelDefault()
-    }, [userData]);
+        if (questionIndex !== -1) {
+            setLevelDefault()
+        }
+    }, [userData, questionIndex]);
 
     useEffect(() => {
         if (questions.length > 0 && questions[questionIndex]) {
