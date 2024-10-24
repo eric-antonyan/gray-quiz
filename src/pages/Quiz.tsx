@@ -13,7 +13,7 @@ type Question = {
 }
 
 const Quiz = () => {
-    const [questionIndex, setQuestionIndex] = useState<number>(-1); // Start with -1 until data is loaded
+    const [questionIndex, setQuestionIndex] = useState<number>(0); // Start with -1 until data is loaded
     const [answer, setAnswer] = useState<string | null>(null); // Avoid empty string for better type safety
     const [answered, setAnswered] = useState(false);
     const [clicked, setClicked] = useState("");
