@@ -25,7 +25,7 @@ const Quiz = () => {
             const user = tg.initDataUnsafe.user;
 
             const fetchQuestions = async () => {
-                const response = await axios.get("http://gray-serv.onrender.com/question");
+                const response = await axios.get("https://gray-serv.onrender.com/question");
                 setQuestions(response.data)
             }
 
