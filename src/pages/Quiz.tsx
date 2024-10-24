@@ -106,7 +106,7 @@ const Quiz = () => {
                                                         answered ? (
                                                             <motion.button
                                                                 key={index}
-                                                                className={`font-bold ${index !== correct ? "bg-red-500 text-white active:bg-red-200/40" : "bg-green-500 text-white active:bg-green-200/40"} p-3 rounded-2xl`}
+                                                                className={`font-bold ${index !== correct ? "bg-red-500 text-white active:bg-red-200" : "bg-green-500 text-white active:bg-green-200"} p-3 rounded-2xl`}
                                                             >
                                                                 {questionAnswer}
                                                             </motion.button>
