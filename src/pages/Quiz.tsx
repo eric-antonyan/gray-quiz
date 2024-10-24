@@ -52,7 +52,7 @@ const Quiz = () => {
             if (user) {
                 const fetchData = async () => {
 
-                    const response = await axios.get(`https://gray-server.vercel.app/users/7277185789`)
+                    const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`)
                     console.log(response.data)
                     if ((response as any).data.id) {
                         setUserData(response.data)
@@ -64,7 +64,7 @@ const Quiz = () => {
         }
     }, []);
     const setLevel = async () => {
-        const response = await axios.get(`https://gray-server.vercel.app/levels/7277185789/${questions[questionIndex].group}/${questionIndex + 1}`)
+        const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex + 1}`)
         setQuestionIndex(parseInt(response.data.level))
     }
 

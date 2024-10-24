@@ -17,7 +17,7 @@ const Account = () => {
 
             if (user) {
                 const fetchData = async () => {
-                    const response = await axios.get(`https://gray-server.vercel.app/users/7277185789`)
+                    const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`)
                     console.log(response.data)
                     if ((response as any).data.id) {
                         setUserData(response.data)
