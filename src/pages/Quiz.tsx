@@ -86,7 +86,7 @@ const Quiz = () => {
     }, [userData, questionIndex]);
 
     useEffect(() => {
-        if (questions.length > 0 && questions[questionIndex]) {
+        if (questions.length > 0) {
             if (answer === questions[questionIndex].answers[questions[questionIndex].correct]) {
                 handleBalance();
             }
