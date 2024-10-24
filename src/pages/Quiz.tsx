@@ -25,7 +25,7 @@ const Quiz = () => {
             const group = questions[questionIndex]?.group;
             if (group) {
                 try {
-                    const response = await axios.get(`https://gray-server.vercel.app/levels/7277185789/${group}`);
+                    const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
                     console.log(response.data);
                     setQuestionIndex(response.data.level as number);
                 } catch (error) {
@@ -82,7 +82,7 @@ const Quiz = () => {
     }, [answer, questions, questionIndex]);
 
     const handleBalance = async () => {
-        await axios.get("https://gray-server.vercel.app/users/7277185789/plus");
+        await axios.get(`https://gray-server.vercel.app/users/${userData.id}/plus`);
     }
 
 
