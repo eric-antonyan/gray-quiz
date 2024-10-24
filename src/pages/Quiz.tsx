@@ -57,9 +57,7 @@ const Quiz = () => {
                         setUserData(() => {
                             return response.data
                         })
-                        setTimeout(() => {
-                            setLevel();
-                        }, 500)
+
                     }
                 }
 
@@ -78,6 +76,7 @@ const Quiz = () => {
                 handleBalance();
             }
 
+            setLevel();
             fetchLevel()
 
 
