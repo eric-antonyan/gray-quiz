@@ -75,7 +75,7 @@ const Quiz = () => {
     }
 
     const setLevelDefault = async () => {
-        const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex + 1}`)
+        const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex}`)
         setQuestionIndex(parseInt(response.data.level))
     }
 
