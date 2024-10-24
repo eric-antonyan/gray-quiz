@@ -25,7 +25,7 @@ const Quiz = () => {
             const user = tg.initDataUnsafe.user;
 
             const fetchQuestions = async () => {
-                const response = await axios.get("https://gray-serv.onrender.com/question");
+                const response = await axios.get("https://gray-server.vercel.app/question");
                 setQuestions(response.data)
             }
 
@@ -33,7 +33,7 @@ const Quiz = () => {
 
             if (user) {
                 const fetchData = async () => {
-                    const response = await axios.get(`https://gray-serv.onrender.com/users/${user.id}`)
+                    const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`)
                     console.log(response.data)
                     if ((response as any).data.id) {
                         setUserData(response.data)
