@@ -50,17 +50,17 @@ const Quiz = () => {
 
 
             if (user) {
-            }
-            const fetchData = async () => {
+                const fetchData = async () => {
 
-                const response = await axios.get(`https://gray-server.vercel.app/users/7277185789`)
-                console.log(response.data)
-                if ((response as any).data.id) {
-                    setUserData(response.data)
+                    const response = await axios.get(`https://gray-server.vercel.app/users/7277185789`)
+                    console.log(response.data)
+                    if ((response as any).data.id) {
+                        setUserData(response.data)
+                    }
                 }
-            }
 
-            fetchData()
+                fetchData()
+            }
         }
     }, []);
     const setLevel = async () => {

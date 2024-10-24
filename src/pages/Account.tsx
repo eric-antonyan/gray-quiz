@@ -16,8 +16,6 @@ const Account = () => {
 
 
             if (user) {
-            }
-        }
                 const fetchData = async () => {
                     const response = await axios.get(`https://gray-server.vercel.app/users/7277185789`)
                     console.log(response.data)
@@ -26,6 +24,8 @@ const Account = () => {
                     }
                 }
                 fetchData()
+            }
+        }
     }, []);
 
     const format = (number: number) => {
