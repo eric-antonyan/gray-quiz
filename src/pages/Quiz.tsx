@@ -24,6 +24,12 @@ const Quiz = () => {
             const tg = (window as any).Telegram.WebApp;
             const user = tg.initDataUnsafe.user;
 
+            const fetchQuestions = async () => {
+                const response = await axios.get("http://gray-serv.onrender.com/question");
+                setQuestions(response.data)
+            }
+
+            fetchQuestions()
 
             if (user) {
                 const fetchData = async () => {
