@@ -54,8 +54,12 @@ const Quiz = () => {
                     const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`)
                     console.log(response.data)
                     if ((response as any).data.id) {
-                        setUserData(response.data)
-                        await setLevel();
+                        setUserData(() => {
+                            return response.data
+                        })
+                        setTimeout(() => {
+                            setLevel();
+                        }, 500)
                     }
                 }
 
