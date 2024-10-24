@@ -81,8 +81,8 @@ const Quiz = () => {
                 handleBalance();
             }
 
-            setLevelDefault()
             fetchLevel()
+            setLevelDefault()
 
 
 
