@@ -63,7 +63,6 @@ const Quiz = () => {
                 const render = async  () => {
 
                     await fetchData()
-                    await setLevelDefault()
                 }
 
                 render()
@@ -79,6 +78,11 @@ const Quiz = () => {
         const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex + 1}`)
         setQuestionIndex(parseInt(response.data.level))
     }
+
+    useEffect(() => {
+
+        setLevelDefault()
+    }, [userData]);
 
     useEffect(() => {
         if (questions.length > 0 && questions[questionIndex]) {
