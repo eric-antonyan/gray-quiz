@@ -70,13 +70,18 @@ const Quiz = () => {
         setQuestionIndex(parseInt(response.data.level))
     }
 
+    const setLevelDefault = async () => {
+        const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex}`)
+        setQuestionIndex(parseInt(response.data.level))
+    }
+
     useEffect(() => {
         if (questions.length > 0 && questions[questionIndex]) {
             if (answer === questions[questionIndex].answers[questions[questionIndex].correct]) {
                 handleBalance();
             }
 
-            setLevel();
+            setLevelDefault()
             fetchLevel()
 
 
