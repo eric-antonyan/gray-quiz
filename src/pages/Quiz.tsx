@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import bg from "../assets/img/background.jpg";
-import {AnimatePresence, motion} from "framer-motion";
-import defaultUser from "../assets/img/default_user.png"
+import { AnimatePresence, motion } from "framer-motion";
+import defaultUser from "../assets/img/default_user.png";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 type Question = {
     task: string;
     answers: string[];
     correct: number;
     group: string;
-}
+};
 
 const Quiz = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
@@ -20,19 +20,17 @@ const Quiz = () => {
     const [userData, setUserData] = useState<any>(null);
     const [questions, setQuestions] = useState<Question[]>([]);
 
+    // Fetch the user's current level for a specific group
     const fetchLevel = async () => {
-        if (!userData || questions.length === 0) return;
+        if (!userData || questions.length === 0 || questionIndex >= questions.length) return;
 
         const group = questions[questionIndex]?.group;
         if (group) {
             try {
                 const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
-                const level = parseInt(response.data.level);
-
-                if (!isNaN(level) && level >= 0 && level < questions.length) {
-                    setQuestionIndex(level);
-                } else {
-                    console.warn("Invalid level received from the server");
+                const currentLevel = parseInt(response.data.level);
+                if (!isNaN(currentLevel) && currentLevel < questions.length) {
+                    setQuestionIndex(currentLevel);
                 }
             } catch (error) {
                 console.error("Error fetching level:", error);
@@ -40,76 +38,13 @@ const Quiz = () => {
         }
     };
 
-    useEffect(() => {
-        const initializeUserAndQuestions = async () => {
-            if ((window as any).Telegram) {
-                const tg = (window as any).Telegram.WebApp;
-                const user = tg.initDataUnsafe.user;
-
-                // Fetch questions first
-                const fetchQuestions = async () => {
-                    try {
-                        const response = await axios.get("https://gray-server.vercel.app/question");
-                        setQuestions(response.data);
-                    } catch (error) {
-                        console.error("Error fetching questions:", error);
-                    }
-                };
-
-                await fetchQuestions();
-
-                // Fetch user data after questions are loaded
-                if (user) {
-                    const fetchData = async () => {
-                        try {
-                            const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
-                            if (response.data.id) {
-                                setUserData(response.data);
-                            }
-                        } catch (error) {
-                            console.error("Error fetching user data:", error);
-                        }
-                    };
-
-                    await fetchData();
-
-                    // Once the user and questions are loaded, set the default level
-                    await setDefaultLevel();
-                }
-            }
-        };
-
-        initializeUserAndQuestions();
-    }, []);
-
-
-    const setLevel = async (newLevel: number) => {
-        if (!userData || questions.length === 0) return;
-
-        const group = questions[questionIndex]?.group;
-        if (group && newLevel >= 0 && newLevel < questions.length) {
-            try {
-                const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${newLevel}`);
-                const updatedLevel = parseInt(response.data.level);
-
-                if (!isNaN(updatedLevel) && updatedLevel >= 0 && updatedLevel < questions.length) {
-                    setQuestionIndex(updatedLevel);
-                } else {
-                    console.warn("Invalid updated level received from the server");
-                }
-            } catch (error) {
-                console.error("Error setting level:", error);
-            }
-        }
-    };
-
+    // Set the user's default level
     const setDefaultLevel = async () => {
         if (!userData || questions.length === 0) return;
 
         const group = questions[questionIndex]?.group;
         if (group) {
             try {
-                // Fetch the default level for the user from the API
                 const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${questionIndex}`);
                 const defaultLevel = parseInt(response.data.level);
 
@@ -124,56 +59,104 @@ const Quiz = () => {
         }
     };
 
+    // Initialize user and questions data
     useEffect(() => {
+        const initializeUserAndQuestions = async () => {
+            if ((window as any).Telegram) {
+                const tg = (window as any).Telegram.WebApp;
+                const user = tg.initDataUnsafe.user;
 
-    }, [userData]);
+                // Fetch questions
+                const fetchQuestions = async () => {
+                    try {
+                        const response = await axios.get("https://gray-server.vercel.app/question");
+                        setQuestions(response.data);
+                    } catch (error) {
+                        console.error("Error fetching questions:", error);
+                    }
+                };
 
-    (async () => {
-        await setDefaultLevel()
-    })()
+                await fetchQuestions();
 
+                // Fetch user data
+                if (user) {
+                    const fetchData = async () => {
+                        try {
+                            const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
+                            if (response.data.id) {
+                                setUserData(response.data);
+                            }
+                        } catch (error) {
+                            console.error("Error fetching user data:", error);
+                        }
+                    };
+
+                    await fetchData();
+
+                    // Set default level
+                    await setDefaultLevel();
+                }
+            }
+        };
+
+        initializeUserAndQuestions();
+    }, []);
+
+    // Set level for the next question
+    const setLevel = async () => {
+        const group = questions[questionIndex]?.group;
+        if (!userData || !group) return;
+
+        try {
+            const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${questionIndex + 1}`);
+            const nextLevel = parseInt(response.data.level);
+            if (!isNaN(nextLevel) && nextLevel < questions.length) {
+                setQuestionIndex(nextLevel);
+            }
+        } catch (error) {
+            console.error("Error setting level:", error);
+        }
+    };
+
+    // Handle answering the question
+    const handleAnswer = (checkedAnswer: string) => {
+        setClicked(`${checkedAnswer}:true`);
+        setTimeout(async () => {
+            setAnswer(checkedAnswer);
+            handleContinue();
+        }, 3000);
+    };
+
+    // Reset after answering a question
+    const handleReset = () => {
+        setAnswered(false);
+        setAnswer("");
+        setClicked("");
+    };
+
+    // Continue to the next question
+    const handleContinue = async () => {
+        setAnswered(true);
+        setTimeout(async () => {
+            await setLevel();
+            handleReset();
+        }, 3000);
+    };
+
+    // Update balance on a correct answer
+    const handleBalance = async () => {
+        await axios.get(`https://gray-server.vercel.app/users/${userData.id}/plus`);
+    };
+
+    // Check answer and fetch the next level
     useEffect(() => {
         if (questions.length > 0 && questionIndex !== 1 && questions[questionIndex]) {
             if (answer === questions[questionIndex].answers[questions[questionIndex].correct]) {
                 handleBalance();
             }
-
-
-            fetchLevel()
-
+            fetchLevel();
         }
     }, [answer, questions, questionIndex]);
-
-    const handleBalance = async () => {
-        await axios.get(`https://gray-server.vercel.app/users/${userData.id}/plus`);
-    }
-
-
-    const handleAnswer = (checkedAnswer: string) => {
-        setClicked(`${checkedAnswer}:true`)
-        setTimeout(async () => {
-            if (answer === "") {
-                setAnswer(checkedAnswer);
-            } else {
-                setAnswer(checkedAnswer);
-            }
-            handleContinue()
-        }, 3000)
-    };
-
-    const handleReset = () => {
-        setAnswered(false);
-        setAnswer("");
-        setClicked("")
-    };
-
-    const handleContinue = async () => {
-        setAnswered(true);
-        setTimeout(async () => {
-            await setLevel(questionIndex + 1);
-            handleReset();
-        }, 3000)
-    };
 
     return (
         <AnimatePresence>
@@ -194,29 +177,24 @@ const Quiz = () => {
                             </Link>
                         </div>
 
-
-                        <div style={{
-                            backdropFilter: "brightness(0.3)",
-                        }} className='w-full overflow-hidden'>
-                            <h1 className='text-white text-center my-5 font-bold'><span
-                                className='text-4xl'>{questions.length} / </span><span
-                                className='text-2xl'>{questionIndex + 1}</span></h1>
+                        <div style={{ backdropFilter: "brightness(0.3)" }} className='w-full overflow-hidden'>
+                            <h1 className='text-white text-center my-5 font-bold'><span className='text-4xl'>{questions.length} / </span><span className='text-2xl'>{questionIndex + 1}</span></h1>
                             <div className='flex px-5'>
                                 <motion.div className='h-[3px] rounded-full bg-white my-5'
-                                            animate={{width: 100 / (questions.length - questionIndex) + "%"}}></motion.div>
+                                            animate={{ width: 100 / (questions.length - questionIndex) + "%" }}></motion.div>
                             </div>
-                            <motion.div initial={{x: 0}}
-                                        animate={{x: -(100 / (questions.length / questionIndex)) + "%"}}
+                            <motion.div initial={{ x: 0 }}
+                                        animate={{ x: -(100 / (questions.length / questionIndex)) + "%" }}
                                         transition={{
                                             duration: 0.25,
                                             type: 'tween'
-                                        }} className='flex' style={{width: questions.length * 100 + "%"}}>
+                                        }} className='flex' style={{ width: questions.length * 100 + "%" }}>
                                 {
                                     questions && (
-                                        questions.map(({correct, answers, task}, i) => (
+                                        questions.map(({ correct, answers, task }, i) => (
                                             <motion.div
                                                 key={i}
-                                                transition={{type: "spring", stiffness: 300, damping: 30}}
+                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
                                                 className='flex flex-col h-screen p-5 flex-1'>
                                                 <h1 className='text-lg font-bold text-center text-white'>{i + 1}. {task}</h1>
                                                 <div className='flex flex-col gap-3 mt-11 w-full'>
