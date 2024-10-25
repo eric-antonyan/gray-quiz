@@ -46,7 +46,7 @@ const Quiz = () => {
                             const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
                             if (response.data.id) {
                                 setUserData(response.data);
-                                await setDefaultLevel();
+                                await setDefaultLevel(response.data);
                             }
                         } catch (error) {
                             console.error("Error fetching user data:", error);
@@ -113,8 +113,8 @@ const Quiz = () => {
     };
 
 // Set the user's default level (similar to fetchLevel but ensures it sets a valid level)
-    const setDefaultLevel = async () => {
-        // if (!userData || questions.length === 0) return;
+    const setDefaultLevel = async (user: any) => {
+        if (!user || questions.length === 0) return;
 
         const group = questions[questionIndex];
         console.log(group)
