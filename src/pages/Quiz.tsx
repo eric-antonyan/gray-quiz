@@ -89,7 +89,7 @@ const Quiz = () => {
     }, [userData]);
 
     (async () => {
-        setLevelDefault()
+        await setLevelDefault()
     })()
 
     useEffect(() => {
