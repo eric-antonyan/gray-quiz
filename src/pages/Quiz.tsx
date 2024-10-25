@@ -60,12 +60,17 @@ const Quiz = () => {
                     }
                 }
 
-                const render = async  () => {
+                const render = async () => {
 
                     await fetchData()
                 }
 
-                render()
+                (async () => {
+                    await render()
+                    if (questions[questionIndex]) {
+                        await setLevelDefault()
+                    }
+                })()
             }
         }
     }, []);
@@ -75,15 +80,17 @@ const Quiz = () => {
     }
 
     const setLevelDefault = async () => {
-        const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex}`)
+        const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex + 1}`)
         setQuestionIndex(parseInt(response.data.level))
     }
 
     useEffect(() => {
-        if (questionIndex !== -1) {
-            setLevelDefault()
-        }
-    }, [userData, questionIndex]);
+
+    }, [userData]);
+
+    (async () => {
+        setLevelDefault()
+    })()
 
     useEffect(() => {
         if (questions.length > 0 && questionIndex !== 1 && questions[questionIndex]) {
@@ -93,7 +100,6 @@ const Quiz = () => {
 
 
             fetchLevel()
-
 
         }
     }, [answer, questions, questionIndex]);
