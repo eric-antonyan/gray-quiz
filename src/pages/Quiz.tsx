@@ -114,7 +114,7 @@ const Quiz = () => {
 
 // Set the user's default level (similar to fetchLevel but ensures it sets a valid level)
     const setDefaultLevel = async () => {
-        if (!userData || questions.length === 0) return;
+        // if (!userData || questions.length === 0) return;
 
         const group = questions[questionIndex];
         console.log(group)
@@ -127,11 +127,14 @@ const Quiz = () => {
             // If a valid level is returned, use it; otherwise, start from 0
             if (levelResponse.data) {
                 const level = levelResponse.data.level ? levelResponse.data.level : 0;
+                console.log("init")
                 setQuestionIndex(level);
             } else {
                 setQuestionIndex(0);
             }
 
+        } else {
+            console.log("asdsfd")
         }
     };
 
