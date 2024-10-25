@@ -38,7 +38,7 @@ const Account = () => {
     return (
         userData && (
             <div className="mx-auto">
-                <header className={`flex items-center justify-between p-4 border-b text-darker border-gray-300 `}>
+                <header className={`flex items-center sticky top-0 bg-white justify-between p-4 border-b text-darker border-gray-300 `}>
                     <Link to={"/quiz"}>
                         <FaChevronLeft className=""/>
                     </Link>
@@ -57,6 +57,17 @@ const Account = () => {
                     <button className={`bg-primary px-3 py-2 text-sm text-white rounded-2xl font-bold mt-4`}>
                         {format(userData.balance).replace("AMD", "FMM")}
                     </button>
+                </div>
+                <div className={"mt-5"}>
+                    <h2 className={"font-bold text-2xl text-center"}>Քուիզներ</h2>
+                </div>
+                <div className={"grid grid-cols-2 p-5 mt-5 gap-5"}>
+                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
+                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
+                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
+                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
+                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
+                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
                 </div>
             </div>
         )
