@@ -121,7 +121,7 @@ const Quiz = () => {
                 const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${questionIndex}`);
                 const defaultLevel = parseInt(response.data.level);
 
-                if (!isNaN(defaultLevel) && defaultLevel >= 0 && defaultLevel < questions.length) {
+                if (response.data) {
                     setQuestionIndex(defaultLevel);
                 } else {
                     // If no valid level is returned, start from 0
