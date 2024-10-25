@@ -21,75 +21,115 @@ const Quiz = () => {
     const [questions, setQuestions] = useState<Question[]>([]);
 
     const fetchLevel = async () => {
-        if (questions.length > 0 && questionIndex < questions.length) {
-            const group = questions[questionIndex]?.group;
-            if (group) {
-                try {
-                    const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
-                    console.log(response.data);
-                    setQuestionIndex(response.data.level as number);
-                } catch (error) {
-                    console.error("Error fetching level:", error);
+        if (!userData || questions.length === 0) return;
+
+        const group = questions[questionIndex]?.group;
+        if (group) {
+            try {
+                const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
+                const level = parseInt(response.data.level);
+
+                if (!isNaN(level) && level >= 0 && level < questions.length) {
+                    setQuestionIndex(level);
+                } else {
+                    console.warn("Invalid level received from the server");
                 }
+            } catch (error) {
+                console.error("Error fetching level:", error);
             }
         }
     };
 
     useEffect(() => {
-        if ((window as any).Telegram) {
-            const tg = (window as any).Telegram.WebApp;
-            const user = tg.initDataUnsafe.user;
+        const initializeUserAndQuestions = async () => {
+            if ((window as any).Telegram) {
+                const tg = (window as any).Telegram.WebApp;
+                const user = tg.initDataUnsafe.user;
 
-            const fetchQuestions = async () => {
-                const response = await axios.get("https://gray-server.vercel.app/question");
-                setQuestions(response.data)
+                // Fetch questions first
+                const fetchQuestions = async () => {
+                    try {
+                        const response = await axios.get("https://gray-server.vercel.app/question");
+                        setQuestions(response.data);
+                    } catch (error) {
+                        console.error("Error fetching questions:", error);
+                    }
+                };
+
+                await fetchQuestions();
+
+                // Fetch user data after questions are loaded
+                if (user) {
+                    const fetchData = async () => {
+                        try {
+                            const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
+                            if (response.data.id) {
+                                setUserData(response.data);
+                            }
+                        } catch (error) {
+                            console.error("Error fetching user data:", error);
+                        }
+                    };
+
+                    await fetchData();
+
+                    // Once the user and questions are loaded, set the default level
+                    await setDefaultLevel();
+                }
             }
+        };
 
-            fetchQuestions()
+        initializeUserAndQuestions();
+    }, []);
 
 
-            if (user) {
-                const fetchData = async () => {
-                    const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`)
-                    console.log(response.data)
-                    if ((response as any).data.id) {
-                        setUserData(() => {
-                            return response.data
-                        })
+    const setLevel = async (newLevel: number) => {
+        if (!userData || questions.length === 0) return;
 
-                    }
+        const group = questions[questionIndex]?.group;
+        if (group && newLevel >= 0 && newLevel < questions.length) {
+            try {
+                const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${newLevel}`);
+                const updatedLevel = parseInt(response.data.level);
+
+                if (!isNaN(updatedLevel) && updatedLevel >= 0 && updatedLevel < questions.length) {
+                    setQuestionIndex(updatedLevel);
+                } else {
+                    console.warn("Invalid updated level received from the server");
                 }
-
-                const render = async () => {
-
-                    await fetchData()
-                }
-
-                (async () => {
-                    await render()
-                    if (questions[questionIndex]) {
-                        await setLevelDefault()
-                    }
-                })()
+            } catch (error) {
+                console.error("Error setting level:", error);
             }
         }
-    }, []);
-    const setLevel = async () => {
-        const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex + 1}`)
-        setQuestionIndex(parseInt(response.data.level))
-    }
+    };
 
-    const setLevelDefault = async () => {
-        const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${questions[questionIndex].group}/${questionIndex}`)
-        setQuestionIndex(parseInt(response.data.level))
-    }
+    const setDefaultLevel = async () => {
+        if (!userData || questions.length === 0) return;
+
+        const group = questions[questionIndex]?.group;
+        if (group) {
+            try {
+                // Fetch the default level for the user from the API
+                const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${questionIndex}`);
+                const defaultLevel = parseInt(response.data.level);
+
+                if (!isNaN(defaultLevel) && defaultLevel >= 0 && defaultLevel < questions.length) {
+                    setQuestionIndex(defaultLevel);
+                } else {
+                    console.warn("Invalid default level received from the server");
+                }
+            } catch (error) {
+                console.error("Error setting default level:", error);
+            }
+        }
+    };
 
     useEffect(() => {
 
     }, [userData]);
 
     (async () => {
-        await setLevelDefault()
+        await setDefaultLevel()
     })()
 
     useEffect(() => {
@@ -130,7 +170,7 @@ const Quiz = () => {
     const handleContinue = async () => {
         setAnswered(true);
         setTimeout(async () => {
-            await setLevel();
+            await setLevel(questionIndex + 1);
             handleReset();
         }, 3000)
     };
