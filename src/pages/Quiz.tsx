@@ -42,11 +42,11 @@ const Quiz = () => {
                 // Fetch user data
                 if (user) {
                     const fetchData = async () => {
-                        await setDefaultLevel();
                         try {
                             const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
                             if (response.data.id) {
                                 setUserData(response.data);
+                                await setDefaultLevel();
                             }
                         } catch (error) {
                             console.error("Error fetching user data:", error);
