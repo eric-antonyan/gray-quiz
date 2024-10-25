@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import bg from "../assets/img/background.jpg";
-import { AnimatePresence, motion } from "framer-motion";
+import {AnimatePresence, motion} from "framer-motion";
 import defaultUser from "../assets/img/default_user.png";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
 type Question = {
     task: string;
@@ -118,15 +118,15 @@ const Quiz = () => {
         const group = questions[questionIndex]?.group;
         if (group) {
             try {
-                const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
-                const defaultLevel = parseInt(response.data.level);
 
                 const levelResponse = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${questionIndex}`);
                 if (levelResponse.data.level) {
-                    setQuestionIndex(defaultLevel);
+                    setQuestionIndex(levelResponse.data.level);
                 } else {
                     // If no valid level is returned, start from 0
-                    setQuestionIndex(0);
+                    const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
+                    const defaultLevel = parseInt(response.data.level);
+                    setQuestionIndex(defaultLevel);
                 }
             } catch (error) {
                 console.error("Error setting default level:", error);
@@ -134,7 +134,6 @@ const Quiz = () => {
             }
         }
     };
-
 
 
     const handleAnswer = (checkedAnswer: string) => {
@@ -195,24 +194,26 @@ const Quiz = () => {
                             </Link>
                         </div>
 
-                        <div style={{ backdropFilter: "brightness(0.3)" }} className='w-full overflow-hidden'>
-                            <h1 className='text-white text-center my-5 font-bold'><span className='text-4xl'>{questions.length} / </span><span className='text-2xl'>{questionIndex + 1}</span></h1>
+                        <div style={{backdropFilter: "brightness(0.3)"}} className='w-full overflow-hidden'>
+                            <h1 className='text-white text-center my-5 font-bold'><span
+                                className='text-4xl'>{questions.length} / </span><span
+                                className='text-2xl'>{questionIndex + 1}</span></h1>
                             <div className='flex px-5'>
                                 <motion.div className='h-[3px] rounded-full bg-white my-5'
-                                            animate={{ width: 100 / (questions.length - questionIndex) + "%" }}></motion.div>
+                                            animate={{width: 100 / (questions.length - questionIndex) + "%"}}></motion.div>
                             </div>
-                            <motion.div initial={{ x: 0 }}
-                                        animate={{ x: -(100 / (questions.length / questionIndex)) + "%" }}
+                            <motion.div initial={{x: 0}}
+                                        animate={{x: -(100 / (questions.length / questionIndex)) + "%"}}
                                         transition={{
                                             duration: 0.25,
                                             type: 'tween'
-                                        }} className='flex' style={{ width: questions.length * 100 + "%" }}>
+                                        }} className='flex' style={{width: questions.length * 100 + "%"}}>
                                 {
                                     questions && (
-                                        questions.map(({ correct, answers, task }, i) => (
+                                        questions.map(({correct, answers, task}, i) => (
                                             <motion.div
                                                 key={i}
-                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                                transition={{type: "spring", stiffness: 300, damping: 30}}
                                                 className='flex flex-col h-screen p-5 flex-1'>
                                                 <h1 className='text-lg font-bold text-center text-white'>{i + 1}. {task}</h1>
                                                 <div className='flex flex-col gap-3 mt-11 w-full'>
