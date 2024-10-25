@@ -60,6 +60,14 @@ const Account = () => {
 
     const handleClear = async () => {
         const response = await axios.get(`https://gray-server.vercel.app/quiz/${userData.id}/clear`)
+        const fetchData = async () => {
+            const response = await axios.get(`https://gray-server.vercel.app/users/${userData.id}`)
+            console.log(response.data)
+            if ((response as any).data.id) {
+                setUserData(response.data)
+            }
+        }
+        fetchData()
         setQuizzes(response.data)
     }
 
@@ -68,7 +76,7 @@ const Account = () => {
             <Theme appearance={"dark"}>
                 <div className="mx-auto">
                     <header
-                        className={`flex items-center sticky top-0 bg-dark justify-between p-4 border-b text-darker border-gray-300 `}>
+                        className={`flex items-center sticky top-0 bg-black justify-between p-4 border-b text-darker border-gray-300 `}>
                         <Link to={"/quiz"} className={"cursor-pointer"}>
                             <FaChevronLeft className="cursor-pointer"/>
                         </Link>
