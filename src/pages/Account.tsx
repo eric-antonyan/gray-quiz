@@ -88,7 +88,7 @@ const Account = () => {
                                 <div className={"w-full h-full p-5 flex flex-col"} style={{backdropFilter: `brightness(40%)`}}>
                                     <h1 className={"text-white text-2xl font-bold flex-1"}>{quiz.quiz.title}</h1>
                                     <div className={"text-white font-bold text-lg flex items-center justify-between"}>
-                                        <p className={"text-2xl"}>${quiz.level + 1}/<span className={"text-sm"}>{quiz.size}</span></p>
+                                        <p className={"text-2xl"}>{quiz.level + 1}/<span className={"text-sm"}>{quiz.size}</span></p>
                                         <Link to={"/quiz"}>
                                             <button
                                                 className={"text-sm bg-white text-black p-3 px-6 rounded-full flex gap-3 items-center"}>Անցնել <FaArrowRight/>
