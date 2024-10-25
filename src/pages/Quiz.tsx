@@ -116,10 +116,13 @@ const Quiz = () => {
         if (!userData || questions.length === 0) return;
 
         const group = questions[questionIndex];
+        console.log(group)
         if (group) {
             try {
                 // Fetch the level for the user's group
                 const levelResponse = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group.group}`);
+
+                console.log(levelResponse.data)
 
                 // If a valid level is returned, use it; otherwise, start from 0
                 const level = levelResponse.data.level ? levelResponse.data.level : 0;
