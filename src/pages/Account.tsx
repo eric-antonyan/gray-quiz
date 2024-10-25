@@ -25,7 +25,7 @@ const Account = () => {
         if ((window as any).Telegram) {
             const tg = (window as any).Telegram.WebApp;
             const user = tg.initDataUnsafe.user;
-            tg.WebApp.expand();
+            tg.expand();
 
             console.log(user)
 
