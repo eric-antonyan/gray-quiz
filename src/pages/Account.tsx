@@ -39,7 +39,7 @@ const Account = () => {
                 }
 
                 const fetchQuizzes = async () => {
-                    const response = await axios.get(`http://localhost:4000/quiz/${user.id}`);
+                    const response = await axios.get(`https://gray-server.vercel.app/quiz/${user.id}`);
                     setQuizzes(response.data)
                 }
                 fetchQuizzes()
