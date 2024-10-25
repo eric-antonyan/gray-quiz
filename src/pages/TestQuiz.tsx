@@ -13,7 +13,7 @@ type Question = {
     group: string;
 };
 
-const Quiz = () => {
+const Test = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
     const [answer, setAnswer] = useState<string | null>("");
     const [answered, setAnswered] = useState(false);
@@ -306,4 +306,4 @@ const Quiz = () => {
     );
 };
 
-export default Quiz;
+export default Test;
