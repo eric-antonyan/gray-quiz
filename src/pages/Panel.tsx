@@ -42,7 +42,7 @@ const Panel = () => {
         e.preventDefault(); // Prevent default form submission behavior
 
         try {
-            const response = await axios.post("https://gray-serv.onrender.com/question", formData, {
+            const response = await axios.post("https://gray-server.vercel.app/question", formData, {
                 headers: {
                     'Content-Type': 'application/json', // Ensure the form is treated as JSON data
                 },
