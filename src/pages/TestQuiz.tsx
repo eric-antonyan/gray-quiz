@@ -3,7 +3,7 @@ import bg from "../assets/img/background.jpg";
 import {AnimatePresence, motion} from "framer-motion";
 import defaultUser from "../assets/img/default_user.png";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {FaCheckCircle} from "react-icons/fa";
 
 type Question = {
@@ -13,7 +13,7 @@ type Question = {
     group: string;
 };
 
-const Test = () => {
+const TestQuiz = () => {
     const [questionIndex, setQuestionIndex] = useState(0);
     const [answer, setAnswer] = useState<string | null>("");
     const [answered, setAnswered] = useState(false);
@@ -21,6 +21,8 @@ const Test = () => {
     const [userData, setUserData] = useState<any>(null);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [isWin, setIsWin] = useState<boolean>(false);
+
+    const { quizId } = useParams()
 
     useEffect(() => {
         const initializeUserAndQuestions = async () => {
@@ -31,18 +33,18 @@ const Test = () => {
                 // Fetch questions
                 const fetchQuestions = async () => {
                     try {
-                        const response = await axios.get("https://gray-server.vercel.app/question");
+                        const response = await axios.get(`http://localhost:4000/quiz/${quizId}`);
                         setQuestions(response.data);
                     } catch (error) {
                         console.error("Error fetching questions:", error);
                     }
                 };
 
-                await fetchQuestions();
 
 
                 // Fetch user data
                 if (user) {
+                    await fetchQuestions();
                     const fetchData = async () => {
                         try {
                             const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
@@ -66,83 +68,6 @@ const Test = () => {
         initializeUserAndQuestions();
     }, []);
 
-    // Function to update the user's current level
-    const setLevel = async (newLevel: number) => {
-        const group = questions[questionIndex]?.group;
-        if (group) {
-            try {
-                // Update the user's level for the specific group
-                const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${newLevel}`);
-                const updatedLevel = parseInt(response.data.level);
-
-                if (!isNaN(updatedLevel) && updatedLevel >= 0 && updatedLevel < questions.length) {
-                    // Update the question index with the new level
-                    setQuestionIndex(updatedLevel);
-                } else {
-                    // If no valid level is returned, log an error or fallback behavior
-                    console.error("Invalid level returned from server:", updatedLevel);
-                }
-            } catch (error) {
-                console.error("Error updating level:", error);
-            }
-        }
-    };
-
-    // Fetch the user's current level for a specific group
-    const fetchLevel = async () => {
-        if (!userData || questions.length === 0 || questionIndex >= questions.length) return;
-
-        const group = questions[questionIndex]?.group;
-        if (group) {
-            try {
-                const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
-                const currentLevel = parseInt(response.data.level);
-
-                if (!isNaN(currentLevel) && currentLevel >= 0 && currentLevel < questions.length) {
-                    // If a valid level exists, set it
-                    setQuestionIndex(currentLevel);
-                } else {
-                    // If no valid level exists, set the level to 0 (start of the quiz)
-                    setQuestionIndex(0);
-                }
-            } catch (error) {
-                console.error("Error fetching level:", error);
-                // If there's an error (e.g., level doesn't exist), default to level 0
-                setQuestionIndex(0);
-            }
-        }
-    };
-
-// Set the user's default level (similar to fetchLevel but ensures it sets a valid level)
-    const setDefaultLevel = async () => {
-        if (!userData || questions.length === 0) return;
-
-        const group = questions[questionIndex];
-        console.log(group)
-        if (group) {
-            // Fetch the level for the user's group
-            const levelResponse = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group.group}`);
-
-            console.log(levelResponse.data)
-
-            // If a valid level is returned, use it; otherwise, start from 0
-            if (levelResponse.data) {
-                const level = levelResponse.data.level ? levelResponse.data.level : 0;
-                console.log("init")
-                setQuestionIndex(level);
-            } else {
-                setQuestionIndex(0);
-            }
-
-        } else {
-            console.log("asdsfd")
-        }
-    };
-
-    (async () => {
-        await setDefaultLevel();
-    })()
-
 
     const handleAnswer = (checkedAnswer: string) => {
         setClicked(`${checkedAnswer}:true`);
@@ -159,27 +84,18 @@ const Test = () => {
         setClicked("");
     };
 
-    // Continue to the next question
     const handleContinue = async () => {
         setAnswered(true);
         setTimeout(async () => {
-            await setLevel(questionIndex + 1);
             handleReset();
+            setQuestionIndex((index) => index + 1)
         }, 3000);
     };
 
-    // Update balance on a correct answer
-    const handleBalance = async () => {
-        await axios.get(`https://gray-server.vercel.app/users/${userData.id}/plus`);
-    };
-
-    // Check answer and fetch the next level
     useEffect(() => {
         if (questions.length > 0 && questionIndex !== 1 && questions[questionIndex]) {
             if (answer === questions[questionIndex].answers[questions[questionIndex].correct]) {
-                handleBalance();
             }
-            fetchLevel();
         }
     }, [answer, questions, questionIndex]);
 
@@ -288,12 +204,14 @@ const Test = () => {
                             </div>
                             <div className={"flex-1 p-5"} style={{backdropFilter: "brightness(0.3)"}}>
                                 <h1 className={"text-white font-bold text-lg text-center"}>Հարցերը վերջացան :)</h1>
-                                <p className={"text-white text-lg font-bold mt-5 text-center"}>Դուք վաստակեցիք {Intl.NumberFormat("ru-RU", {
-                                    currency: "AMD",
-                                    style: "currency"
-                                }).format(userData.balance).replace("AMD", "FMM")}</p>
+                                <p className={"text-white text-lg font-bold mt-5 text-center"}>Դուք
+                                    վաստակեցիք {Intl.NumberFormat("ru-RU", {
+                                        currency: "AMD",
+                                        style: "currency"
+                                    }).format(userData.balance).replace("AMD", "FMM")}</p>
                                 <p className={"bg-danger p-4 rounded-3xl px-5 font-bold text-white mt-5"}>
-                                    Հարգելի {userData.first_name} բալանսը տեսնելու համար սեղմեք <Link className={"underline"} to={"/account"}>այստեղ</Link>
+                                    Հարգելի {userData.first_name} բալանսը տեսնելու համար սեղմեք <Link
+                                    className={"underline"} to={"/account"}>այստեղ</Link>
                                 </p>
                             </div>
                         </div>
@@ -306,4 +224,4 @@ const Test = () => {
     );
 };
 
-export default Test;
+export default TestQuiz;

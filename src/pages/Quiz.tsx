@@ -3,7 +3,7 @@ import bg from "../assets/img/background.jpg";
 import {AnimatePresence, motion} from "framer-motion";
 import defaultUser from "../assets/img/default_user.png";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {FaCheckCircle} from "react-icons/fa";
 
 type Question = {
@@ -22,6 +22,8 @@ const Quiz = () => {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [isWin, setIsWin] = useState<boolean>(false);
 
+    const { quizId } = useParams()
+
     useEffect(() => {
         const initializeUserAndQuestions = async () => {
             if ((window as any).Telegram) {
@@ -31,18 +33,18 @@ const Quiz = () => {
                 // Fetch questions
                 const fetchQuestions = async () => {
                     try {
-                        const response = await axios.get("https://gray-server.vercel.app/question");
+                        const response = await axios.get(`http://localhost:4000/quiz/${quizId}/find`);
                         setQuestions(response.data);
                     } catch (error) {
                         console.error("Error fetching questions:", error);
                     }
                 };
 
-                await fetchQuestions();
 
 
                 // Fetch user data
                 if (user) {
+                    await fetchQuestions();
                     const fetchData = async () => {
                         try {
                             const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
@@ -288,12 +290,14 @@ const Quiz = () => {
                             </div>
                             <div className={"flex-1 p-5"} style={{backdropFilter: "brightness(0.3)"}}>
                                 <h1 className={"text-white font-bold text-lg text-center"}>Հարցերը վերջացան :)</h1>
-                                <p className={"text-white text-lg font-bold mt-5 text-center"}>Դուք վաստակեցիք {Intl.NumberFormat("ru-RU", {
-                                    currency: "AMD",
-                                    style: "currency"
-                                }).format(userData.balance).replace("AMD", "FMM")}</p>
+                                <p className={"text-white text-lg font-bold mt-5 text-center"}>Դուք
+                                    վաստակեցիք {Intl.NumberFormat("ru-RU", {
+                                        currency: "AMD",
+                                        style: "currency"
+                                    }).format(userData.balance).replace("AMD", "FMM")}</p>
                                 <p className={"bg-danger p-4 rounded-3xl px-5 font-bold text-white mt-5"}>
-                                    Հարգելի {userData.first_name} բալանսը տեսնելու համար սեղմեք <Link className={"underline"} to={"/account"}>այստեղ</Link>
+                                    Հարգելի {userData.first_name} բալանսը տեսնելու համար սեղմեք <Link
+                                    className={"underline"} to={"/account"}>այստեղ</Link>
                                 </p>
                             </div>
                         </div>
