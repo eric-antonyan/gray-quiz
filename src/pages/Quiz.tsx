@@ -115,7 +115,7 @@ const Quiz = () => {
     const setDefaultLevel = async () => {
         if (!userData || questions.length === 0) return;
 
-        const group = questions[questionIndex]?.group;
+        const group = questions[questionIndex];
         if (group) {
             try {
                 // Fetch the level for the user's group
