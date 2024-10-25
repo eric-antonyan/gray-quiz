@@ -119,14 +119,14 @@ const Quiz = () => {
         if (group) {
             try {
 
-                const levelResponse = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${questionIndex}`);
+                const levelResponse = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
                 if (levelResponse.data.level) {
                     setQuestionIndex(levelResponse.data.level);
                 } else {
                     // If no valid level is returned, start from 0
-                    // const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
-                    // const defaultLevel = parseInt(response.data.level);
-                    // setQuestionIndex(defaultLevel);
+                    const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}`);
+                    const defaultLevel = parseInt(response.data.level);
+                    setQuestionIndex(defaultLevel);
                 }
             } catch (error) {
                 console.error("Error setting default level:", error);
