@@ -38,6 +38,8 @@ const Quiz = () => {
 
                 await fetchQuestions();
 
+                await setDefaultLevel();
+
                 // Fetch user data
                 if (user) {
                     const fetchData = async () => {
@@ -54,7 +56,7 @@ const Quiz = () => {
                     await fetchData();
 
                     // Set default level
-                    await setDefaultLevel();
+
                 }
             }
         };
