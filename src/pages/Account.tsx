@@ -94,7 +94,7 @@ const Account = () => {
                                         {
                                             quiz.quiz.inDevelopment ? (
                                                 <div className={"flex items-center my-5"}>
-                                                    <p className={"font-bold bg-red-600 p-2 rounded-full text-white text-[10px] inline-block"}>Մշակվում
+                                                    <p className={"font-bold bg-gray-400 p-2 rounded-full text-white text-[10px] inline-block"}>Մշակվում
                                                         է</p>
                                                 </div>
                                             ) : null
