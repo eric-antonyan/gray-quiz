@@ -1,11 +1,18 @@
-import { FC, useEffect, useState } from "react";
+import {FC, useEffect, useState} from "react";
 import axios from "axios";
-import {FaChevronLeft, FaGear, FaGears, FaLeftRight} from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import {FaArrowRight, FaChevronLeft, FaGear, FaGears, FaLeftRight} from "react-icons/fa6";
+import {Link} from "react-router-dom";
 import defaultUser from "../assets/img/default_user.png"
+
+type Quiz = {
+    title: string;
+    uuid: string;
+    background: string;
+}
 
 const Account = () => {
     const [userData, setUserData] = useState<any>();
+    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
     useEffect(() => {
         if ((window as any).Telegram) {
@@ -23,6 +30,12 @@ const Account = () => {
                         setUserData(response.data)
                     }
                 }
+
+                const fetchQuizzes = async () => {
+                    const response = await axios.get("https://gray-server.vercel.app/quiz");
+                    setQuizzes(response.data)
+                }
+                fetchQuizzes()
                 fetchData()
             }
         }
@@ -38,7 +51,8 @@ const Account = () => {
     return (
         userData && (
             <div className="mx-auto">
-                <header className={`flex items-center sticky top-0 bg-white justify-between p-4 border-b text-darker border-gray-300 `}>
+                <header
+                    className={`flex items-center sticky top-0 bg-white justify-between p-4 border-b text-darker border-gray-300 `}>
                     <Link to={"/quiz"}>
                         <FaChevronLeft className=""/>
                     </Link>
@@ -47,11 +61,11 @@ const Account = () => {
                     <FaGear/>
                 </header>
                 <div className="flex flex-col items-center mt-6">
-                            <img
-                                src={userData.photo_url ? userData.photo_url : defaultUser}
-                                alt={`${userData.first_name} ${userData.last_name}`}
-                                className={`w-[150px] aspect-square rounded-full border-2 border-primary`}
-                            />
+                    <img
+                        src={userData.photo_url ? userData.photo_url : defaultUser}
+                        alt={`${userData.first_name} ${userData.last_name}`}
+                        className={`w-[150px] aspect-square rounded-full border-2 border-primary`}
+                    />
                     <h2 className={`mt-4 text-xl font-semibold text-black`}>{userData.first_name} {userData.last_name ? userData.last_name : null}</h2>
                     <p className="text-gray-600">{userData.username ? `@${userData.username}` : null}</p>
                     <button className={`bg-primary px-3 py-2 text-sm text-white rounded-2xl font-bold mt-4`}>
@@ -61,13 +75,25 @@ const Account = () => {
                 <div className={"mt-5"}>
                     <h2 className={"font-bold text-2xl text-center"}>Քուիզներ</h2>
                 </div>
-                <div className={"grid grid-cols-2 p-5 mt-5 gap-5"}>
-                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
-                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
-                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
-                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
-                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
-                    <div className={"aspect-square bg-gray-200 rounded-3xl"}></div>
+                <div className={"grid grid-cols- p-5 mt-5 gap-5"}>
+                    {
+                        quizzes.map((quiz, i) => (
+                            <div key={i} className={"bg-gray-200 rounded-3xl cursor-pointer h-[200px] overflow-hidden"}
+                                 style={{background: `url(${quiz.background})`, backgroundSize: "cover"}}>
+                                <div className={"w-full h-full p-5 flex flex-col"} style={{backdropFilter: `brightness(40%)`}}>
+                                    <h1 className={"text-white text-2xl font-bold flex-1"}>{quiz.title}</h1>
+                                    <div className={"text-white font-bold text-lg flex items-center justify-between"}>
+                                        <p className={"text-2xl"}>12/<span className={"text-sm"}>1</span></p>
+                                        <Link to={"/quiz"}>
+                                            <button
+                                                className={"text-sm bg-white text-black p-3 px-6 rounded-full flex gap-3 items-center"}>Անցնել <FaArrowRight/>
+                                            </button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
                 </div>
             </div>
         )
