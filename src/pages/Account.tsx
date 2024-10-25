@@ -5,9 +5,14 @@ import {Link} from "react-router-dom";
 import defaultUser from "../assets/img/default_user.png"
 
 type Quiz = {
-    title: string;
-    uuid: string;
-    background: string;
+    quiz: {
+        title: string;
+        uuid: string;
+        background: string;
+    }
+
+    size: number;
+    level: number;
 }
 
 const Account = () => {
@@ -32,7 +37,7 @@ const Account = () => {
                 }
 
                 const fetchQuizzes = async () => {
-                    const response = await axios.get("https://gray-server.vercel.app/quiz");
+                    const response = await axios.get(`https://gray-server.vercel.app/quiz/${user.id}`);
                     setQuizzes(response.data)
                 }
                 fetchQuizzes()
@@ -79,11 +84,11 @@ const Account = () => {
                     {
                         quizzes.map((quiz, i) => (
                             <div key={i} className={"bg-gray-200 rounded-3xl cursor-pointer h-[200px] overflow-hidden"}
-                                 style={{background: `url(${quiz.background})`, backgroundSize: "cover"}}>
+                                 style={{background: `url(${quiz.quiz.background})`, backgroundSize: "cover"}}>
                                 <div className={"w-full h-full p-5 flex flex-col"} style={{backdropFilter: `brightness(40%)`}}>
-                                    <h1 className={"text-white text-2xl font-bold flex-1"}>{quiz.title}</h1>
+                                    <h1 className={"text-white text-2xl font-bold flex-1"}>{quiz.quiz.title}</h1>
                                     <div className={"text-white font-bold text-lg flex items-center justify-between"}>
-                                        <p className={"text-2xl"}>12/<span className={"text-sm"}>1</span></p>
+                                        <p className={"text-2xl"}>${quiz.level + 1}/<span className={"text-sm"}>{quiz.size}</span></p>
                                         <Link to={"/quiz"}>
                                             <button
                                                 className={"text-sm bg-white text-black p-3 px-6 rounded-full flex gap-3 items-center"}>Անցնել <FaArrowRight/>
