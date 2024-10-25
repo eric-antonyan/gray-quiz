@@ -67,7 +67,7 @@ const Quiz = () => {
     // Function to update the user's current level
     const setLevel = async (newLevel: number) => {
         const group = questions[questionIndex]?.group;
-        console.log(group)
+        console.log(group, "asdasdasd")
         if (group) {
             try {
                 // Update the user's level for the specific group
