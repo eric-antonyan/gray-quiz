@@ -38,11 +38,11 @@ const Quiz = () => {
 
                 await fetchQuestions();
 
-                await setDefaultLevel();
 
                 // Fetch user data
                 if (user) {
                     const fetchData = async () => {
+                        await setDefaultLevel();
                         try {
                             const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
                             if (response.data.id) {
@@ -66,9 +66,8 @@ const Quiz = () => {
 
     // Function to update the user's current level
     const setLevel = async (newLevel: number) => {
-        if (!userData || questions.length === 0) return;
-
         const group = questions[questionIndex]?.group;
+        console.log(group)
         if (group) {
             try {
                 // Update the user's level for the specific group
