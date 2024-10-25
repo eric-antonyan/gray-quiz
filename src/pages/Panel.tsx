@@ -20,7 +20,7 @@ const Panel = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get("https://gray-serv.vercel.app/quiz");
+                const response = await axios.get("https://gray-server.vercel.app/quiz");
                 setLocations(response.data);
             } catch (error) {
                 console.error("Error fetching locations", error);
