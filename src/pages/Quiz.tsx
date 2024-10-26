@@ -222,7 +222,7 @@ const Quiz = () => {
                                     className='text-2xl'>{questionIndex + 1}</span></h1>
                                 <div className='flex px-5'>
                                     <motion.div className='h-[3px] rounded-full bg-white my-5'
-                                                animate={{width: 100 / (questions.length - questionIndex) + "%"}}></motion.div>
+                                                animate={{width: (questionIndex * 100) / questions.length + "%"}}></motion.div>
                                 </div>
                                 <motion.div initial={{x: 0}}
                                             animate={{x: -(100 / (questions.length / questionIndex)) + "%"}}

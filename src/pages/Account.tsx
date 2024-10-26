@@ -6,6 +6,7 @@ import defaultUser from "../assets/img/default_user.png"
 import {FaCheckCircle} from "react-icons/fa";
 import "@radix-ui/themes/styles.css";
 import {AlertDialog, Button, Flex, Theme} from "@radix-ui/themes";
+import {questions} from "../mock-data";
 
 type Quiz = {
     quiz: {
@@ -22,8 +23,6 @@ type Quiz = {
 const Account = () => {
     const [userData, setUserData] = useState<any>();
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-
-    const { quizId } = useParams()
 
     useEffect(() => {
         if ((window as any).Telegram) {
@@ -44,7 +43,7 @@ const Account = () => {
                 }
 
                 const fetchQuizzes = async () => {
-                    const response = await axios.get(`https://gray-server.vercel.app/quiz/${quizId}/find`);
+                    const response = await axios.get(`https://gray-server.vercel.app/quiz/${user.id}`);
                     setQuizzes(response.data)
                 }
                 fetchQuizzes()
@@ -73,6 +72,12 @@ const Account = () => {
         setQuizzes(response.data)
     }
 
+    const levelsSum = quizzes.length !== 0 ? quizzes.reduce((total, quiz) => total + quiz.level + 1, 0) : 0
+
+    const levelsSizeSum = quizzes.length !== 0 ? quizzes.reduce((total, size) => total + size.size, 0) : 0
+
+    const percent = (levelsSum * 100) / levelsSizeSum;
+
     return (
         userData && (
             <Theme appearance={"dark"}>
@@ -80,7 +85,7 @@ const Account = () => {
                     <header
                         className={`flex items-center sticky top-0 bg-black justify-between p-4 border-b text-darker border-gray-300 `}>
                         <Link to={"/quiz"} className={"cursor-pointer"}>
-                            <FaChevronLeft className="cursor-pointer"/>
+                            {percent.toFixed(0) + "%"}
                         </Link>
                         <span
                             className="font-bold text-lg">{userData.username ? userData.username : `${userData.first_name} ${userData.last_name}`}</span>
