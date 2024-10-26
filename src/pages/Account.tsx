@@ -94,7 +94,7 @@ const Account = () => {
                                 <FaTrash/>
                             </AlertDialog.Trigger>
                             <AlertDialog.Content>
-                                <AlertDialog.Title>Սկսել նուրից</AlertDialog.Title>
+                                <AlertDialog.Title>Սկսել նորից</AlertDialog.Title>
                                 <AlertDialog.Description>Սկսե՞լ նորից, միավորները զրոյանալու են և և ամեն ինչ սկսվելու է
                                     նորից</AlertDialog.Description>
                                 <Flex gap="3" mt="4" justify="end">
