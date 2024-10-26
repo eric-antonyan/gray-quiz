@@ -1,7 +1,7 @@
 import {FC, useEffect, useState} from "react";
 import axios from "axios";
 import {FaArrowRight, FaChevronLeft, FaGear, FaGears, FaLeftRight, FaTrash, FaXmark} from "react-icons/fa6";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import defaultUser from "../assets/img/default_user.png"
 import {FaCheckCircle} from "react-icons/fa";
 import "@radix-ui/themes/styles.css";
@@ -23,6 +23,8 @@ const Account = () => {
     const [userData, setUserData] = useState<any>();
     const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
+    const { quizId } = useParams()
+
     useEffect(() => {
         if ((window as any).Telegram) {
             const tg = (window as any).Telegram.WebApp;
@@ -42,7 +44,7 @@ const Account = () => {
                 }
 
                 const fetchQuizzes = async () => {
-                    const response = await axios.get(`https://gray-server.vercel.app/quiz/${user.id}`);
+                    const response = await axios.get(`https://gray-server.vercel.app/quiz/${quizId}/find`);
                     setQuizzes(response.data)
                 }
                 fetchQuizzes()
