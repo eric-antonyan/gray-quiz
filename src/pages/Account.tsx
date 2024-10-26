@@ -72,7 +72,7 @@ const Account = () => {
         setQuizzes(response.data)
     }
 
-    const levelsSum = quizzes.length !== 0 ? quizzes.reduce((total, quiz) => total + quiz.level + 1, 0) : 0
+    const levelsSum = quizzes.length !== 0 ? quizzes.reduce((total, quiz) => total + quiz.level, 0) : 0
 
     const levelsSizeSum = quizzes.length !== 0 ? quizzes.reduce((total, size) => total + size.size, 0) : 0
 
