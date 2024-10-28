@@ -50,7 +50,6 @@ const Quiz = () => {
                             const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
                             if (response.data.id) {
                                 setUserData(response.data);
-
                             }
                         } catch (error) {
                             console.error("Error fetching user data:", error);
@@ -58,9 +57,6 @@ const Quiz = () => {
                     };
 
                     await fetchData();
-
-                    // Set default level
-
                 }
             }
         };
@@ -141,10 +137,6 @@ const Quiz = () => {
         }
     };
 
-    (async () => {
-        await setDefaultLevel();
-    })()
-
 
     const handleAnswer = (checkedAnswer: string) => {
         setClicked(`${checkedAnswer}:true`);
@@ -183,18 +175,48 @@ const Quiz = () => {
             }
             fetchLevel();
         }
+
     }, [answer, questions, questionIndex]);
 
     useEffect(() => {
-        if (questions) {
-            console.log(questions.length, questionIndex + 1)
-            if (questions.length === questionIndex + 1) {
+        const setDefaultLevel = async () => {
+            if (!userData || questions.length === 0) return;
+
+            const group = questions[questionIndex];
+            console.log(group);
+
+            if (group) {
+                try {
+                    const levelResponse = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group.group}`);
+                    console.log(levelResponse.data);
+
+                    if (levelResponse.data) {
+                        const level = levelResponse.data.level ? levelResponse.data.level + 1 : 0;
+                        console.log("init");
+                        setQuestionIndex(level);
+                    } else {
+                        setQuestionIndex(0);
+                    }
+                } catch (error) {
+                    console.error("Error setting default level:", error);
+                }
+            } else {
+                console.log("Group data missing");
+            }
+        };
+
+        setDefaultLevel();
+    }, [userData, questions]);
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (questions && questionIndex >= questions.length) {
                 const fetchData = async () => {
                     try {
                         const response = await axios.get(`https://gray-server.vercel.app/users/${userData.id}`);
                         if (response.data.id) {
                             setUserData(response.data);
-
                         }
                     } catch (error) {
                         console.error("Error fetching user data:", error);
@@ -202,11 +224,13 @@ const Quiz = () => {
                 };
 
                 fetchData();
-                setIsWin(true)
+                setIsWin(true);
             } else {
-                setIsWin(false)
+                setIsWin(false);
             }
         }
+
+        fetchData()
     }, [questionIndex, questions]);
 
     return (
@@ -303,11 +327,6 @@ const Quiz = () => {
                             </div>
                             <div className={"flex-1 p-5"} style={{backdropFilter: "brightness(0.3)"}}>
                                 <h1 className={"text-white font-bold text-lg text-center"}>Հարցերը վերջացան :)</h1>
-                                <p className={"text-white text-lg font-bold mt-5 text-center"}>Դուք
-                                    վաստակեցիք {Intl.NumberFormat("ru-RU", {
-                                        currency: "AMD",
-                                        style: "currency"
-                                    }).format(userData.balance).replace("AMD", "FMM")}</p>
                                 <p className={"bg-danger p-4 rounded-3xl px-5 font-bold text-white mt-5"}>
                                     Հարգելի {userData.first_name} բալանսը տեսնելու համար սեղմեք <Link
                                     className={"underline"} to={"/account"}>այստեղ</Link>
