@@ -127,7 +127,7 @@ const Account = () => {
                                     )}
                                     <div className="flex justify-end gap-5 mt-auto">
                                         <Link to={!quiz.quiz.inDevelopment && quiz.size !== quiz.level + 1 ? `/quiz/${quiz.quiz.uuid}` : ""}>
-                                            <button disabled={quiz.quiz.inDevelopment || quiz.size <= quiz.level + 1} className="text-sm bg-white text-black p-3 px-6 disabled:bg-gray-300 rounded-full flex gap-3 items-center">
+                                            <button disabled={quiz.quiz.inDevelopment || quiz.size === quiz.level + 1} className="text-sm bg-white text-black p-3 px-6 disabled:bg-gray-300 rounded-full flex gap-3 items-center">
                                                 Անցնել {quiz.size >= quiz.level ? <FaArrowRight/> : <FaCheckCircle/>}
                                             </button>
                                         </Link>
