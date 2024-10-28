@@ -1,6 +1,6 @@
 import {FC, useEffect, useState} from "react";
 import axios from "axios";
-import {FaArrowRight, FaChevronLeft, FaGear, FaGears, FaLeftRight, FaTrash, FaXmark} from "react-icons/fa6";
+import {FaArrowRight, FaChevronLeft, FaGear, FaGears, FaLeftRight, FaRepeat, FaTrash, FaXmark} from "react-icons/fa6";
 import {Link, useParams} from "react-router-dom";
 import defaultUser from "../assets/img/default_user.png"
 import {FaCheckCircle} from "react-icons/fa";
@@ -133,7 +133,7 @@ const Account = () => {
                                         </Link>
                                         <Link to={!quiz.quiz.inDevelopment && quiz.size === quiz.level ? `/test/${quiz.quiz.uuid}` : ""}>
                                             <button disabled={quiz.quiz.inDevelopment || quiz.size > quiz.level} className="text-sm bg-white text-black p-3 px-6 disabled:bg-gray-300 rounded-full flex gap-3 items-center">
-                                                Կրկնել {quiz.size !== quiz.level ? <FaArrowRight/> : <FaXmark/>}
+                                                Կրկնել {quiz.size !== quiz.level + 1 ? <FaArrowRight/> : <FaRepeat/>}
                                             </button>
                                         </Link>
                                     </div>
