@@ -188,10 +188,10 @@ const Quiz = () => {
     useEffect(() => {
         if (questions) {
             console.log(questions.length, questionIndex + 1)
-            if (questions.length <= questionIndex + 1) {
+            if (questions.length === questionIndex + 1) {
                 const fetchData = async () => {
                     try {
-                        const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
+                        const response = await axios.get(`https://gray-server.vercel.app/users/${userData.id}`);
                         if (response.data.id) {
                             setUserData(response.data);
 
