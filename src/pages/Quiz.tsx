@@ -129,7 +129,7 @@ const Quiz = () => {
 
             // If a valid level is returned, use it; otherwise, start from 0
             if (levelResponse.data) {
-                const level = levelResponse.data.level ? levelResponse.data.level : 0;
+                const level = levelResponse.data.level ? levelResponse.data.level + 1 : 0;
                 console.log("init")
                 setQuestionIndex(level);
             } else {
@@ -189,6 +189,19 @@ const Quiz = () => {
         if (questions) {
             console.log(questions.length, questionIndex + 1)
             if (questions.length <= questionIndex + 1) {
+                const fetchData = async () => {
+                    try {
+                        const response = await axios.get(`https://gray-server.vercel.app/users/${user.id}`);
+                        if (response.data.id) {
+                            setUserData(response.data);
+
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                    }
+                };
+
+                fetchData();
                 setIsWin(true)
             } else {
                 setIsWin(false)
