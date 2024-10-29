@@ -75,7 +75,7 @@ const Account = () => {
         userData && (
             <Theme appearance={"dark"}>
                 <div className="mx-auto">
-                    <header className="flex items-center sticky top-0 bg-black justify-between p-4 border-b text-darker border-gray-300">
+                    <header className="flex items-center sticky top-0 z-50 bg-black justify-between p-4 border-b text-darker border-gray-300">
                         <Link to={"/quiz"} className={"cursor-pointer"}>
                             {percent + "%"}
                         </Link>
