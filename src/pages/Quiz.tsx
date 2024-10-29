@@ -20,16 +20,13 @@ const Quiz = () => {
     const [userData, setUserData] = useState<any>(null);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [isWin, setIsWin] = useState<boolean>(false);
-
     const { quizId } = useParams();
 
     useEffect(() => {
         const initializeData = async () => {
             if (!(window as any).Telegram) return;
-
             const tg = (window as any).Telegram.WebApp;
             const user = tg.initDataUnsafe?.user;
-
             if (!user) return;
 
             try {
@@ -55,14 +52,13 @@ const Quiz = () => {
     }, [questions, userData]);
 
     const setDefaultLevel = async (user: any, questions: Question[]) => {
-        console.log(questions)
-        const group = questions[0];
+        const group = questions[0]?.group;
         if (!group) return;
 
         try {
             const response = await axios.get(`https://gray-server.vercel.app/levels/${user.id}/${group}`);
             const level = response.data.level;
-            setQuestionIndex(level <= questions.length ? level + 1 : 0);
+            setQuestionIndex(level <= questions.length ? level : 0);
         } catch (error) {
             console.error("Error setting default level:", error);
         }
@@ -73,31 +69,29 @@ const Quiz = () => {
         if (!group) return;
 
         try {
-            const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${newLevel}`);
-            const updatedLevel = response.data.level;
-            setQuestionIndex(updatedLevel);
+            await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${newLevel}`);
+            setQuestionIndex(newLevel);
         } catch (error) {
             console.error("Error setting new level:", error);
         }
     };
 
     const handleAnswer = (selectedAnswer: string) => {
-        setClicked(`${selectedAnswer}:true`);
+        setClicked(selectedAnswer);
+        setAnswered(true);
+        setAnswer(selectedAnswer);
+
         setTimeout(() => {
-            setAnswer(selectedAnswer);
+            if (selectedAnswer === questions[questionIndex]?.answers[questions[questionIndex]?.correct]) {
+                axios.get(`https://gray-server.vercel.app/users/${userData.id}/plus`);
+            }
             handleNextQuestion();
         }, 3000);
     };
 
     const handleNextQuestion = async () => {
-        setAnswered(true);
-        setTimeout(async () => {
-            if (answer === questions[questionIndex]?.answers[questions[questionIndex]?.correct]) {
-                await axios.get(`https://gray-server.vercel.app/users/${userData.id}/plus`);
-            }
-            await setLevel(questionIndex + 1);
-            resetState();
-        }, 3000);
+        await setLevel(questionIndex + 1);
+        resetState();
     };
 
     const resetState = () => {
@@ -107,15 +101,14 @@ const Quiz = () => {
     };
 
     useEffect(() => {
-        setIsWin(questions || questionIndex >= questions.length);
+        setIsWin(questions.length > 0 && questionIndex >= questions.length);
     }, [questionIndex, questions]);
 
     return (
         <AnimatePresence>
             {userData ? (
                 !isWin ? (
-                    <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }}
-                         className="flex flex-col h-screen bg-cover w-full mx-auto">
+                    <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }} className="flex flex-col h-screen bg-cover w-full mx-auto">
                         <Header userData={userData} />
                         <QuizContent
                             questions={questions}
@@ -141,8 +134,7 @@ const Header = ({ userData }: { userData: any }) => (
         <Link to="/account">
             <div className="flex gap-2 items-center bg-white text-sm p-2 rounded-2xl">
                 <p className="font-bold text-black">@{userData.username}</p>
-                <img src={userData.photo_url || defaultUser} alt="User Avatar"
-                     className="w-[30px] aspect-square object-cover rounded-full" />
+                <img src={userData.photo_url || defaultUser} alt="User Avatar" className="w-[30px] aspect-square object-cover rounded-full" />
             </div>
         </Link>
     </div>
@@ -151,22 +143,14 @@ const Header = ({ userData }: { userData: any }) => (
 const QuizContent = ({ questions, questionIndex, clicked, answered, handleAnswer }: any) => (
     <div style={{ backdropFilter: "brightness(0.3)" }} className="w-full overflow-hidden">
         <h1 className="text-white text-center my-5 font-bold">
-            <span className="text-4xl">{questions.length} / </span><span className="text-2xl">{questionIndex}</span>
+            <span className="text-4xl">{questionIndex + 1} / </span><span className="text-2xl">{questions.length}</span>
         </h1>
         <div className="flex px-5">
-            <motion.div className="h-[3px] rounded-full bg-white my-5"
-                        animate={{ width: `${(questionIndex * 100) / questions.length}%` }} />
+            <motion.div className="h-[3px] rounded-full bg-white my-5" animate={{ width: `${((questionIndex + 1) * 100) / questions.length}%` }} />
         </div>
-        <motion.div initial={{ x: 0 }} animate={{ x: `-${(100 / (questions.length / questionIndex)) - 10}%` }}
-                    transition={{ duration: 0.25, type: 'tween' }}
-                    className="flex" style={{ width: `${questions.length * 100}%` }}>
-            {questions.map(({ task, answers, correct }: {
-                task: string,
-                answers: string[],
-                correct: number
-            }, i: number) => (
-                <QuestionSlide key={i} task={task} answers={answers} correct={correct} questionIndex={i}
-                               clicked={clicked} answered={answered} handleAnswer={handleAnswer} />
+        <motion.div initial={{ x: 0 }} animate={{ x: `-${(questionIndex / questions.length) * 100}%` }} transition={{ duration: 0.25, type: 'tween' }} className="flex" style={{ width: `${questions.length * 100}%` }}>
+            {questions.map(({ task, answers, correct }: { task: string, answers: string[], correct: number }, i: number) => (
+                <QuestionSlide key={i} task={task} answers={answers} correct={correct} questionIndex={i} clicked={clicked} answered={answered} handleAnswer={handleAnswer} />
             ))}
         </motion.div>
     </div>
@@ -180,8 +164,8 @@ const QuestionSlide = ({ task, answers, correct, clicked, answered, handleAnswer
                 <motion.button
                     key={index}
                     onClick={() => !answered ? handleAnswer(answer) : null}
-                    className={`p-3 font-bold rounded-2xl ${answered ? (index === correct ? "bg-green-500" : "bg-red-500") : "bg-white"} text-black`}
-                    animate={{ backgroundColor: clicked.includes(answer) ? ["yellow", "#0f0", clicked.includes(answer) && index === correct ? "green" : "red"] : "white" }}
+                    className={`p-3 font-bold rounded-2xl ${answered ? (answer === answers[correct] ? "bg-green-500" : "bg-red-500") : "bg-white"} text-black`}
+                    animate={{ backgroundColor: clicked === answer ? (answer === answers[correct] ? "green" : "red") : "white" }}
                     transition={{ delay: 0.5 }}
                 >
                     {answer}
@@ -192,14 +176,12 @@ const QuestionSlide = ({ task, answers, correct, clicked, answered, handleAnswer
 );
 
 const WinningScreen = ({ userData }: { userData: any }) => (
-    <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }}
-         className="flex flex-col h-screen bg-cover w-full mx-auto">
+    <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }} className="flex flex-col h-screen bg-cover w-full mx-auto">
         <Header userData={userData} />
         <div className="flex-1 p-5" style={{ backdropFilter: "brightness(0.3)" }}>
             <h1 className="text-white font-bold text-lg text-center">Հարցերը վերջացան :)</h1>
             <p className="bg-danger p-4 rounded-3xl px-5 font-bold text-white mt-5">
-                Հարգելի {userData.first_name}, բալանսը տեսնելու համար սեղմեք <Link className="underline"
-                                                                                   to="/account">այստեղ</Link>
+                Հարգելի {userData.first_name}, բալանսը տեսնելու համար սեղմեք <Link className="underline" to="/account">այստեղ</Link>
             </p>
         </div>
     </div>
