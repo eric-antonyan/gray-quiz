@@ -40,7 +40,6 @@ const Quiz = () => {
 
                 setUserData(userResponse.data);
                 setQuestions(questionsResponse.data);
-                setDefaultLevel(userResponse.data, questionsResponse.data);
             } catch (error) {
                 console.error("Error initializing data:", error);
             }
@@ -49,31 +48,36 @@ const Quiz = () => {
         initializeData();
     }, [quizId]);
 
+    useEffect(() => {
+        if (questions.length > 0 && userData) {
+            setDefaultLevel(userData, questions);
+        }
+    }, [questions, userData]);
+
     const setDefaultLevel = async (user: any, questions: Question[]) => {
-        const group = questions[questionIndex]?.group;
+        console.log(questions)
+        const group = questions[0];
         if (!group) return;
 
         try {
             const response = await axios.get(`https://gray-server.vercel.app/levels/${user.id}/${group}`);
-            const level = response.data.level + 1;
-            console.log("Levels " + level + " " + "parser " + "" + String(parseInt(level) >= questions.length))
-            setQuestionIndex(level <= questions.length ? level : 0);
+            const level = response.data.level;
+            setQuestionIndex(level <= questions.length ? level + 1 : 0);
         } catch (error) {
             console.error("Error setting default level:", error);
-
         }
     };
 
     const setLevel = async (newLevel: number) => {
         const group = questions[questionIndex]?.group;
-        if (!group || !userData) return;
+        if (!group) return;
 
         try {
             const response = await axios.get(`https://gray-server.vercel.app/levels/${userData.id}/${group}/${newLevel}`);
-            const updatedLevel = parseInt(response.data.level, 10);
-            setQuestionIndex(!isNaN(updatedLevel) && updatedLevel < questions.length ? updatedLevel : 0);
+            const updatedLevel = response.data.level;
+            setQuestionIndex(updatedLevel);
         } catch (error) {
-            console.error("Error updating level:", error);
+            console.error("Error setting new level:", error);
         }
     };
 
@@ -103,18 +107,13 @@ const Quiz = () => {
     };
 
     useEffect(() => {
-        console.log(questions.length && questionIndex + 1 >= questions.length, `questions length: ${questions.length}; questionIndex: ${questionIndex};`)
-        if (questionIndex + 1 >= questions.length) {
-            setIsWin(true);
-        } else {
-            setIsWin(false);
-        }
-    }, [questionIndex, questions.length]);
+        setIsWin(questions || questionIndex >= questions.length);
+    }, [questionIndex, questions]);
 
     return (
         <AnimatePresence>
             {userData ? (
-                isWin ? (
+                !isWin ? (
                     <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }}
                          className="flex flex-col h-screen bg-cover w-full mx-auto">
                         <Header userData={userData} />
@@ -142,7 +141,8 @@ const Header = ({ userData }: { userData: any }) => (
         <Link to="/account">
             <div className="flex gap-2 items-center bg-white text-sm p-2 rounded-2xl">
                 <p className="font-bold text-black">@{userData.username}</p>
-                <img src={userData.photo_url || defaultUser} alt="User Avatar" className="w-[30px] aspect-square object-cover rounded-full" />
+                <img src={userData.photo_url || defaultUser} alt="User Avatar"
+                     className="w-[30px] aspect-square object-cover rounded-full" />
             </div>
         </Link>
     </div>
@@ -157,10 +157,16 @@ const QuizContent = ({ questions, questionIndex, clicked, answered, handleAnswer
             <motion.div className="h-[3px] rounded-full bg-white my-5"
                         animate={{ width: `${(questionIndex * 100) / questions.length}%` }} />
         </div>
-        <motion.div initial={{ x: 0 }} animate={{ x: `-${(100 / (questions.length / questionIndex)) - 10}%` }} transition={{ duration: 0.25, type: 'tween' }}
+        <motion.div initial={{ x: 0 }} animate={{ x: `-${(100 / (questions.length / questionIndex)) - 10}%` }}
+                    transition={{ duration: 0.25, type: 'tween' }}
                     className="flex" style={{ width: `${questions.length * 100}%` }}>
-            {questions.map(({ task, answers, correct } : {task: string, answers: string[], correct: number}, i: number) => (
-                <QuestionSlide key={i} task={task} answers={answers} correct={correct} questionIndex={i} clicked={clicked} answered={answered} handleAnswer={handleAnswer} />
+            {questions.map(({ task, answers, correct }: {
+                task: string,
+                answers: string[],
+                correct: number
+            }, i: number) => (
+                <QuestionSlide key={i} task={task} answers={answers} correct={correct} questionIndex={i}
+                               clicked={clicked} answered={answered} handleAnswer={handleAnswer} />
             ))}
         </motion.div>
     </div>
@@ -173,7 +179,7 @@ const QuestionSlide = ({ task, answers, correct, clicked, answered, handleAnswer
             {answers.map((answer: string, index: number) => (
                 <motion.button
                     key={index}
-                    onClick={() => !answered && handleAnswer(answer)}
+                    onClick={() => !answered ? handleAnswer(answer) : null}
                     className={`p-3 font-bold rounded-2xl ${answered ? (index === correct ? "bg-green-500" : "bg-red-500") : "bg-white"} text-black`}
                     animate={{ backgroundColor: clicked.includes(answer) ? ["yellow", "#0f0", clicked.includes(answer) && index === correct ? "green" : "red"] : "white" }}
                     transition={{ delay: 0.5 }}
@@ -186,12 +192,14 @@ const QuestionSlide = ({ task, answers, correct, clicked, answered, handleAnswer
 );
 
 const WinningScreen = ({ userData }: { userData: any }) => (
-    <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }} className="flex flex-col h-screen bg-cover w-full mx-auto">
+    <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }}
+         className="flex flex-col h-screen bg-cover w-full mx-auto">
         <Header userData={userData} />
         <div className="flex-1 p-5" style={{ backdropFilter: "brightness(0.3)" }}>
             <h1 className="text-white font-bold text-lg text-center">Հարցերը վերջացան :)</h1>
             <p className="bg-danger p-4 rounded-3xl px-5 font-bold text-white mt-5">
-                Հարգելի {userData.first_name}, բալանսը տեսնելու համար սեղմեք <Link className="underline" to="/account">այստեղ</Link>
+                Հարգելի {userData.first_name}, բալանսը տեսնելու համար սեղմեք <Link className="underline"
+                                                                                   to="/account">այստեղ</Link>
             </p>
         </div>
     </div>
