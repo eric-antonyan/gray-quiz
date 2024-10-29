@@ -108,7 +108,7 @@ const Quiz = () => {
         <AnimatePresence>
             {userData ? (
                 !isWin ? (
-                    <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }} className="flex flex-col h-screen bg-cover w-full mx-auto">
+                    <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }} className="flex flex-col bg-cover w-full mx-auto">
                         <Header userData={userData} />
                         <QuizContent
                             questions={questions}
