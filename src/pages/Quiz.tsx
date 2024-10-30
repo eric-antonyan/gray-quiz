@@ -4,6 +4,7 @@ import defaultUser from "../assets/img/default_user.png";
 import { AnimatePresence, motion } from "framer-motion";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
+import {questions} from "../mock-data";
 
 type Question = {
     task: string;
@@ -20,6 +21,9 @@ const Quiz = () => {
     const [userData, setUserData] = useState<any>(null);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [isWin, setIsWin] = useState<boolean>(false);
+
+    const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+
     const { quizId } = useParams();
 
     useEffect(() => {
@@ -84,6 +88,8 @@ const Quiz = () => {
         setTimeout(() => {
             if (selectedAnswer === questions[questionIndex]?.answers[questions[questionIndex]?.correct]) {
                 axios.get(`https://gray-server.vercel.app/users/${userData.id}/plus`);
+
+                setCorrectAnswersCount((prev) => prev + 1)
             }
             handleNextQuestion();
         }, 3000);
@@ -119,7 +125,7 @@ const Quiz = () => {
                         />
                     </div>
                 ) : (
-                    <WinningScreen userData={userData} />
+                    <WinningScreen questionIndex={questionIndex} correctAnswersCount={correctAnswersCount} userData={userData} />
                 )
             ) : (
                 <p>Loading user data...</p>
@@ -175,14 +181,20 @@ const QuestionSlide = ({ task, answers, correct, clicked, answered, handleAnswer
     </motion.div>
 );
 
-const WinningScreen = ({ userData }: { userData: any }) => (
+const WinningScreen = ({ userData, correctAnswersCount, questionIndex }: { userData: any, correctAnswersCount: number, questionIndex: number }) => (
     <div style={{ background: `url(${bg})`, backdropFilter: "brightness(0.3)" }} className="flex flex-col h-screen bg-cover w-full mx-auto">
         <Header userData={userData} />
-        <div className="flex-1 p-5" style={{ backdropFilter: "brightness(0.3)" }}>
+        <div className="flex-1 p-5" style={{backdropFilter: "brightness(0.3)"}}>
             <h1 className="text-white font-bold text-lg text-center">Հարցերը վերջացան :)</h1>
             <p className="bg-danger p-4 rounded-3xl px-5 font-bold text-white mt-5">
-                Հարգելի {userData.first_name}, բալանսը տեսնելու համար սեղմեք <Link className="underline" to="/account">այստեղ</Link>
+                Հարգելի {userData.first_name}, բալանսը տեսնելու համար սեղմեք <Link className="underline"
+                                                                                   to="/account">այստեղ</Link>
             </p>
+            <p className={"text-white font-bold mt-5 bg-green-500 p-4 uppercase text-sm rounded-full text-center"}>ճիշտ
+                պատասխաններ։ <span>{correctAnswersCount}</span></p>
+            <p className={"text-white font-bold mt-5 bg-red-500 p-4 uppercase text-sm rounded-full text-center"}>սխալ
+                պատասխաններ։ <span>{questionIndex - correctAnswersCount}</span></p>
+
         </div>
     </div>
 );
