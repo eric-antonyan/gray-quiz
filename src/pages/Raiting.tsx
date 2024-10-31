@@ -38,12 +38,12 @@ const Raiting = () => {
 
     return (
         userData && (
-            <div className={"bg-slate-900"}>
+            <div className={"bg-black h-screen overflow-y-auto"}>
                 <Header userData={userData} />
                 <div className={""}>
-                    <div className={"text-white sticky top-[86px] bg-slate-900 p-5 flex justify-between gap-4 font-bold border-b-1 border-slate-600"}>
+                    <div className={"text-white sticky top-[86px] bg-black p-5 flex justify-between gap-4 font-bold border-b-1 border-slate-700"}>
                         <div className={"flex gap-5 z-50"}>
-                            <p>#</p>
+                            <p>👑</p>
                             <p>User name</p>
                         </div>
                         <p>FMM</p>
@@ -51,14 +51,16 @@ const Raiting = () => {
                     {
                         users && (
                             sortedAscending.map((user: any, i: number) => (
-                                <div
-                                    className={`text-white border-slate-600 p-5 flex justify-between gap-4 font-bold ${i === 0 ? "bg-yellow-400" : i === 1 ? "bg-gray-300" : i === 2 ? "bg-orange-700" : "border-b-1"}`}>
-                                    <div className={"flex gap-5"}>
-                                        <p>{i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1}</p>
-                                        <p>{user.username ? user.username : user.first_name ? user.first_name : user.last_name}</p>
+                                i + 1 <= 10 && (
+                                    <div
+                                        className={`text-white border-slate-600 p-5 flex justify-between gap-4 bg-gradient-to-r font-bold ${i === 0 ? "from-yellow-400 to-amber-500" : i === 1 ? "from-zinc-300 to-zinc-500" : i === 2 ? "from-yellow-500 to-amber-700" : "border-b-1 border-slate-700 bg-black"}`}>
+                                        <div className={"flex gap-5"}>
+                                            <p>{i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : i + 1}</p>
+                                            <p>{user.username ? user.username : user.first_name ? user.first_name : user.last_name}</p>
+                                        </div>
+                                        <p>{user.balance}</p>
                                     </div>
-                                    <p>{user.balance}</p>
-                                </div>
+                                )
                             ))
                         )
                     }
