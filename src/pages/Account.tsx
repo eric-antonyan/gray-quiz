@@ -75,7 +75,8 @@ const Account = () => {
         userData && (
             <Theme appearance={"dark"}>
                 <div className="mx-auto">
-                    <header className="flex items-center sticky top-0 z-50 bg-black justify-between p-4 border-b text-darker border-gray-300">
+                    <header
+                        className="flex items-center sticky top-0 z-50 bg-black justify-between p-4 border-b text-darker border-gray-300">
                         <Link to={"/quiz"} className={"cursor-pointer"}>
                             {percent + "%"}
                         </Link>
@@ -88,7 +89,8 @@ const Account = () => {
                             </AlertDialog.Trigger>
                             <AlertDialog.Content>
                                 <AlertDialog.Title>Սկսել նորից</AlertDialog.Title>
-                                <AlertDialog.Description>Սկսե՞լ նորից, միավորները զրոյանալու են և ամեն ինչ սկսվելու է նորից</AlertDialog.Description>
+                                <AlertDialog.Description>Սկսե՞լ նորից, միավորները զրոյանալու են և ամեն ինչ սկսվելու է
+                                    նորից</AlertDialog.Description>
                                 <Flex gap="3" mt="4" justify="end">
                                     <AlertDialog.Cancel>
                                         <Button variant="soft" color="gray">Cancel</Button>
@@ -101,7 +103,9 @@ const Account = () => {
                         </AlertDialog.Root>
                     </header>
                     <div className="flex flex-col items-center mt-6">
-                        <img src={userData.photo_url ? userData.photo_url : defaultUser} alt={`${userData.first_name} ${userData.last_name}`} className="w-[150px] aspect-square rounded-full border-2 border-primary" />
+                        <img src={userData.photo_url ? userData.photo_url : defaultUser}
+                             alt={`${userData.first_name} ${userData.last_name}`}
+                             className="w-[150px] aspect-square rounded-full border-2 border-primary"/>
                         <h2 className="mt-4 text-xl font-semibold">{userData.first_name} {userData.last_name}</h2>
                         <p className="text-gray-600">{userData.username ? `@${userData.username}` : null}</p>
                         <button className="bg-primary px-3 py-2 text-sm text-white rounded-2xl font-bold mt-4">
@@ -109,30 +113,43 @@ const Account = () => {
                         </button>
                     </div>
                     <div className="grid grid-cols-1 p-5 mt-5 gap-5">
+                        <Link to={"/raiting"} className={"bg-yellow-500 p-5 font-bold text-black rounded-full flex justify-between items-center"}>
+                            <p className={"flex items-center gap-3"}>Տեսնել #TOP-երը <span className={"text-sm rounded-full px-3 text-white bg-red-500 p-1"}>Նոր</span></p>
+                            <FaArrowRight />
+                        </Link>
                         {quizzes.map((quiz, i) => (
-                            <div key={i} className="bg-gray-200 rounded-3xl cursor-pointer h-[200px] overflow-hidden" style={{ background: `url(${quiz.quiz.background})`, backgroundSize: "cover" }}>
-                                <div className="w-full h-full p-5 flex flex-col" style={{ backdropFilter: `brightness(40%)` }}>
+                            <div key={i} className="bg-gray-200 rounded-3xl cursor-pointer h-[200px] overflow-hidden"
+                                 style={{background: `url(${quiz.quiz.background})`, backgroundSize: "cover"}}>
+                                <div className="w-full h-full p-5 flex flex-col"
+                                     style={{backdropFilter: `brightness(40%)`}}>
                                     <div className="flex justify-between items-center">
                                         <h1 className="text-white text-2xl font-bold flex-1">{quiz.quiz.title}</h1>
                                         {quiz.quiz.inDevelopment && (
                                             <div className="flex items-center my-5">
-                                                <p className="font-bold bg-red-600 p-2 rounded-full text-white text-[10px] inline-block">Մշակվում է</p>
+                                                <p className="font-bold bg-red-600 p-2 rounded-full text-white text-[10px] inline-block">Մշակվում
+                                                    է</p>
                                             </div>
                                         )}
                                     </div>
                                     {!quiz.quiz.inDevelopment && (
-                                        <div className="text-white font-bold text-lg flex-[4] flex items-center justify-between">
-                                            <p className="text-2xl">{quiz.level}/<span className="text-sm">{quiz.size}</span></p>
+                                        <div
+                                            className="text-white font-bold text-lg flex-[4] flex items-center justify-between">
+                                            <p className="text-2xl">{quiz.level}/<span
+                                                className="text-sm">{quiz.size}</span></p>
                                         </div>
                                     )}
                                     <div className="flex justify-end gap-5 mt-auto">
-                                        <Link to={!quiz.quiz.inDevelopment && quiz.size !== quiz.level ? `/quiz/${quiz.quiz.uuid}` : ""}>
-                                            <button disabled={quiz.quiz.inDevelopment || quiz.size === quiz.level} className="text-sm bg-white text-black p-3 px-6 disabled:bg-gray-300 rounded-full flex gap-3 items-center">
+                                        <Link
+                                            to={!quiz.quiz.inDevelopment && quiz.size !== quiz.level ? `/quiz/${quiz.quiz.uuid}` : ""}>
+                                            <button disabled={quiz.quiz.inDevelopment || quiz.size === quiz.level}
+                                                    className="text-sm bg-white text-black p-3 px-6 disabled:bg-gray-300 rounded-full flex gap-3 items-center">
                                                 Անցնել {quiz.size >= quiz.level ? <FaArrowRight/> : <FaCheckCircle/>}
                                             </button>
                                         </Link>
-                                        <Link to={!quiz.quiz.inDevelopment && quiz.size === quiz.level ? `/test/${quiz.quiz.uuid}` : ""}>
-                                            <button disabled={quiz.quiz.inDevelopment || quiz.size > quiz.level} className="text-sm bg-white text-black p-3 px-6 disabled:bg-gray-300 rounded-full flex gap-3 items-center">
+                                        <Link
+                                            to={!quiz.quiz.inDevelopment && quiz.size === quiz.level ? `/test/${quiz.quiz.uuid}` : ""}>
+                                            <button disabled={quiz.quiz.inDevelopment || quiz.size > quiz.level}
+                                                    className="text-sm bg-white text-black p-3 px-6 disabled:bg-gray-300 rounded-full flex gap-3 items-center">
                                                 Կրկնել {quiz.size !== quiz.level + 1 ? <FaArrowRight/> : <FaRepeat/>}
                                             </button>
                                         </Link>

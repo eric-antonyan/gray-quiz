@@ -134,12 +134,12 @@ const Quiz = () => {
     );
 };
 
-const Header = ({ userData }: { userData: any }) => (
+export const Header = ({ userData }: { userData: any }) => (
     <div className="text-white sticky top-0 z-40 p-5 bg-black flex justify-between items-center">
         <h1 className="font-bold text-2xl">Gray<span className="text-red-500">Quizz</span></h1>
         <Link to="/account">
             <div className="flex gap-2 items-center bg-white text-sm p-2 rounded-2xl">
-                <p className="font-bold text-black">@{userData.username}</p>
+                <p className="font-bold text-black">@{userData.username ? userData.username : userData.first_name}</p>
                 <img src={userData.photo_url || defaultUser} alt="User Avatar" className="w-[30px] aspect-square object-cover rounded-full" />
             </div>
         </Link>
