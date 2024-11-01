@@ -44,6 +44,8 @@ const Raiting = () => {
     // Sort users by balance in descending order
     const sortedAscending = [...users].sort((a: any, b: any) => b.balance - a.balance);
 
+    const userIndex = sortedAscending.findIndex((user) => user.id === userData?.id);
+
     return (
         userData && (
             <div className="bg-black h-screen overflow-y-auto">
@@ -58,7 +60,7 @@ const Raiting = () => {
                     </div>
                     {sortedAscending.slice(0, 10).map((user: any, i: number) => (
                         <div
-                            key={user.id} // added unique key to prevent warnings
+                            key={user.id}
                             className={`text-white border-slate-600 p-5 flex justify-between gap-4 bg-gradient-to-r font-bold ${
                                 i === 0
                                     ? "from-yellow-400 to-amber-500"
@@ -76,6 +78,18 @@ const Raiting = () => {
                             <p>{user.balance}</p>
                         </div>
                     ))}
+                    {userIndex > 10 ? (
+                        <div
+                            key={userData.id}
+                            className="text-white border-slate-600 bg-gradient-to-r from-red-500 to-red-700 p-5 flex justify-between gap-4 bg-gradient-to-r font-bold"
+                        >
+                            <div className="flex gap-5">
+                                <p>{sortedAscending.findIndex((user) => user.id === userData.id)}</p>
+                                <p>{userData.username || userData.first_name || userData.last_name}</p>
+                            </div>
+                            <p>{userData.balance}</p>
+                        </div>
+                    ) : null}
                 </div>
             </div>
         )
