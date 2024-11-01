@@ -14,7 +14,8 @@ const Panel = () => {
         answer_2: '',
         answer_3: '',
         correct: '',
-        group: ''
+        group: '',
+        image: ''
     });
 
     useEffect(() => {
@@ -55,7 +56,8 @@ const Panel = () => {
                 answer_2: '',
                 answer_3: '',
                 correct: '',
-                group: ''
+                group: '',
+                image: ''
             });
         } catch (error) {
             console.error("Error submitting form", error);
@@ -95,6 +97,8 @@ const Panel = () => {
                         onChange={handleChange}
                     />
                 </div>
+                <p>Image</p>
+                <input name={"image"} value={formData.image} onChange={handleChange} className={"border-1"} />
 
                 <p>chisht e</p>
                 <input

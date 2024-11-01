@@ -155,16 +155,21 @@ const QuizContent = ({ questions, questionIndex, clicked, answered, handleAnswer
             <motion.div className="h-[3px] rounded-full bg-white my-5" animate={{ width: `${((questionIndex + 1) * 100) / questions.length}%` }} />
         </div>
         <motion.div initial={{ x: 0 }} animate={{ x: `-${(questionIndex / questions.length) * 100}%` }} transition={{ duration: 0.25, type: 'tween' }} className="flex" style={{ width: `${questions.length * 100}%` }}>
-            {questions.map(({ task, answers, correct }: { task: string, answers: string[], correct: number }, i: number) => (
-                <QuestionSlide key={i} task={task} answers={answers} correct={correct} questionIndex={i} clicked={clicked} answered={answered} handleAnswer={handleAnswer} />
+            {questions.map(({ task, answers, correct, image }: { task: string, answers: string[], correct: number, image: string }, i: number) => (
+                <QuestionSlide key={i} task={task} answers={answers} correct={correct} questionIndex={i} image={image} clicked={clicked} answered={answered} handleAnswer={handleAnswer} />
             ))}
         </motion.div>
     </div>
 );
 
-const QuestionSlide = ({ task, answers, correct, clicked, answered, handleAnswer }: any) => (
+const QuestionSlide = ({ task, answers, correct, clicked, answered, handleAnswer, image }: any) => (
     <motion.div className="flex flex-col h-screen p-5 flex-1">
         <h1 className="text-lg font-bold text-center text-white">{task}</h1>
+        {
+            image && (
+                <img alt={task} className={"rounded-3xl aspect-square object-cover"} src={image} />
+            )
+        }
         <div className="flex flex-col gap-3 mt-11 w-full">
             {answers.map((answer: string, index: number) => (
                 <motion.button
