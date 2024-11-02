@@ -81,7 +81,7 @@ const Account = () => {
                             {percent + "%"}
                         </Link>
                         <span className="font-bold text-lg">
-                            {userData.username ? userData.username : `${userData.first_name} ${userData.last_name}`}
+                            {userData.username ? userData.username : `${userData.first_name} ${userData?.last_name}`}
                         </span>
                         <AlertDialog.Root>
                             <AlertDialog.Trigger>
